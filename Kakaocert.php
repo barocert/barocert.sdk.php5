@@ -12,7 +12,7 @@
  * https://www.linkhub.co.kr
  * Author : lsh (code@linkhubcorp.com)
  * Written : 2023-03-13
- * Updated : 2023-03-13
+ * Updated : 2023-04-11
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
@@ -25,16 +25,14 @@ class KakaocertService
 {
 
   const ServiceID = 'BAROCERT';
-  const ServiceURL = 'https://bc-api.linkhub.kr'; // TODO :: 나중에 바꿔야 함.
+  const ServiceURL = 'https://barocert.linkhub.co.kr';
   const ServiceURL_Static = 'https://static-barocert.linkhub.co.kr';
-  const ServiceURL_GA = 'https://ga-barocert.linkhub.co.kr';
   const Version = '2.0';
 
   private $Token_Table = array();
   private $Linkhub;
   private $IPRestrictOnOff = true;
   private $UseStaticIP = false;
-  private $UseGAIP = false;
   private $UseLocalTimeYN = true;
 
   private $scopes = array();
@@ -65,11 +63,6 @@ class KakaocertService
     $this->UseStaticIP = $V;
   }
 
-  public function UseGAIP($V)
-  {
-    $this->UseGAIP = $V;
-  }
-
   public function UseLocalTimeYN($V)
   {
     $this->UseLocalTimeYN = $V;
@@ -77,19 +70,17 @@ class KakaocertService
 
   private function getTargetURL()
   {
-    if ($this->UseGAIP) {
-      return KakaocertService::ServiceURL_GA;
-    } else if ($this->UseStaticIP) {
+    if ($this->UseStaticIP) {
       return KakaocertService::ServiceURL_Static;
     }
     return KakaocertService::ServiceURL;
   }
 
-  private function getsession_Token($CorpNum)
+  private function getsession_Token()
   {
     $targetToken = null;
 
-    if (array_key_exists($CorpNum, $this->Token_Table)) {
+    if (array_key_exists($this->Linkhub->getLinkID(), $this->Token_Table)) {
       $targetToken = $this->Token_Table[$CorpNum];
     }
 
@@ -106,16 +97,16 @@ class KakaocertService
 
     if ($Refresh) {
       try {
-        $targetToken = $this->Linkhub->getToken(KakaocertService::ServiceID, $CorpNum, $this->scopes, $this->IPRestrictOnOff ? null : "*", $this->UseStaticIP, $this->UseLocalTimeYN, $this->UseGAIP);
+        $targetToken = $this->Linkhub->getToken(KakaocertService::ServiceID, "", $this->scopes, $this->IPRestrictOnOff ? null : "*", $this->UseStaticIP, $this->UseLocalTimeYN, false);
       } catch (LinkhubException $le) {
         throw new BarocertException($le->getMessage(), $le->getCode());
       }
-      $this->Token_Table[$CorpNum] = $targetToken;
+      $this->Token_Table[$this->Linkhub->getLinkID()] = $targetToken;
     }
     return $targetToken->session_token;
   }
 
-  protected function executeCURL($uri, $ClientCode = null, $userID = null, $isPost = false, $action = null, $postdata = null, $isMultiPart = false, $contentsType = null)
+  protected function executeCURL($uri, $isPost = false, $postdata = null)
   {
     if ($this->__requestMode != "STREAM") {
 
@@ -124,10 +115,7 @@ class KakaocertService
       $http = curl_init($targetURL . $uri);
       $header = array();
 
-      if (is_null($ClientCode) == false) {
-        $header[] = 'Authorization: Bearer ' . $this->getsession_Token($ClientCode);
-      }
-
+      $header[] = 'Authorization: Bearer ' . $this->getsession_Token();
       $header[] = 'Content-Type: Application/json';
 
       if ($isPost) {
@@ -137,17 +125,20 @@ class KakaocertService
         $xDate = $this->Linkhub->getTime($this->UseStaticIP, false, $this->UseGAIP);
 
         $digestTarget = 'POST' . chr(10);
+
+        $digestTarget = $digestTarget . uri . chr(10);
+
         $digestTarget = $digestTarget . base64_encode(hash('sha256', $postdata, true)) . chr(10);
 
         $digestTarget = $digestTarget . $xDate . chr(10);
 
-        $digestTarget = $digestTarget . Linkhub::VERSION . chr(10);
+        $digestTarget = $digestTarget . '2.0' . chr(10);
 
         $digest = base64_encode(hash_hmac('sha256', $digestTarget, base64_decode(strtr($this->Linkhub->getSecretKey(), '-_', '+/')), true));
 
-        $header[] = 'x-lh-date: ' . $xDate;
-        $header[] = 'x-lh-version: ' . Linkhub::VERSION;
-        $header[] = 'x-bc-auth: ' . $this->Linkhub->getLinkID() . ' ' . $digest;
+        $header[] = 'x-bc-date: ' . $xDate;
+        $header[] = 'x-bc-version: ' . '2.0';
+        $header[] = 'x-bc-auth: ' .  $digest;
       }
 
       curl_setopt($http, CURLOPT_HTTPHEADER, $header);
@@ -180,28 +171,28 @@ class KakaocertService
 
       $header[] = 'Accept-Encoding: gzip,deflate';
       $header[] = 'Connection: close';
-      if (is_null($ClientCode) == false) {
-        $header[] = 'Authorization: Bearer ' . $this->getsession_Token($ClientCode);
-      }
+      $header[] = 'Authorization: Bearer ' . $this->getsession_Token();
+      $header[] = 'Content-Type: Application/json';
+      $postbody = $postdata;
 
-      if ($isMultiPart == false) {
-        $header[] = 'Content-Type: Application/json';
-        $postbody = $postdata;
+      $xDate = $this->Linkhub->getTime($this->UseStaticIP, false, $this->UseGAIP);
 
-        $xDate = $this->Linkhub->getTime($this->UseStaticIP, false, $this->UseGAIP);
+      $digestTarget = 'POST' . chr(10);
+      
+      $digestTarget = $digestTarget . uri . chr(10);
 
-        $digestTarget = 'POST' . chr(10);
-        $digestTarget = $digestTarget . base64_encode(hash('sha256', $postdata, true)) . chr(10);
-        $digestTarget = $digestTarget . $xDate . chr(10);
+      $digestTarget = $digestTarget . base64_encode(hash('sha256', $postdata, true)) . chr(10);
+      
+      $digestTarget = $digestTarget . $xDate . chr(10);
 
-        $digestTarget = $digestTarget . Linkhub::VERSION . chr(10);
+      $digestTarget = $digestTarget . '2.0' . chr(10);
 
-        $digest = base64_encode(hash_hmac('sha256', $digestTarget, base64_decode(strtr($this->Linkhub->getSecretKey(), '-_', '+/')), true));
+      $digest = base64_encode(hash_hmac('sha256', $digestTarget, base64_decode(strtr($this->Linkhub->getSecretKey(), '-_', '+/')), true));
 
-        $header[] = 'x-lh-date: ' . $xDate;
-        $header[] = 'x-lh-version: ' . Linkhub::VERSION;
-        $header[] = 'x-bc-auth: ' . $this->Linkhub->getLinkID() . ' ' . $digest;
-      }
+      $header[] = 'x-bc-date: ' . $xDate;
+      $header[] = 'x-bc-version: ' . '2.0';
+      $header[] = 'x-bc-auth: ' . $digest;
+      
 
       $params = array(
         'http' => array(
@@ -252,170 +243,50 @@ class KakaocertService
     }
   }
 
-  /**
-   * 전자서명 요청(단건)
-   */
-  public function requestESign($ClientCode, $RequestESign, $appUseYN = false)
-  {
-    if (is_null($ClientCode) || empty($ClientCode)) {
-      throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
-    }
-    if (is_null($RequestESign) || empty($RequestESign)) {
-      throw new BarocertException('전자서명 요청정보가 입력되지 않았습니다.');
-    }
 
-    $RequestESign->clientCode = $ClientCode;
-    $RequestESign->appUseYN = $appUseYN;
-
-    $postdata = json_encode($RequestESign);
-
-    $result = $this->executeCURL('/KAKAO/ESign/Request', $ClientCode, null, true, null, $postdata);
-
-    $ResponseESign = new ResponseESign();
-    $ResponseESign->fromJsonInfo($result);
-    return $ResponseESign;
+  public function encrypt($data){
+    return encAES256CBC($data);
   }
 
-  /**
-   * 전자서명 요청(다건)
-   */
-  public function bulkRequestESign($ClientCode, $RequestESign, $appUseYN = false)
-  {
-    if (is_null($ClientCode) || empty($ClientCode)) {
-      throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
-    }
-    if (is_null($RequestESign) || empty($RequestESign)) {
-      throw new BarocertException('전자서명 요청정보가 입력되지 않았습니다.');
-    }
-
-    $RequestESign->clientCode = $ClientCode;
-    $RequestESign->appUseYN = $appUseYN;
-
-    $postdata = json_encode($RequestESign);
-
-    $result = $this->executeCURL('/KAKAO/ESign/BulkRequest', $ClientCode, null, true, null, $postdata);
-
-    $ResponseESign = new ResponseESign();
-    $ResponseESign->fromJsonInfo($result);
-    return $ResponseESign;
+  function pkcs7padding($data){
+    $padding = 16 - strlen($data) % 16;
+    $padding_text = str_repeat(chr($padding),$padding);
+    return $data . $padding_text;
   }
 
-  /**
-   * 전자서명 상태 확인(단건)
-   */
-  public function getESignState($ClientCode, $receiptID)
-  {
-    if (is_null($ClientCode) || empty($ClientCode)) {
-      throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
-    }
-    if (is_null($receiptID) || empty($receiptID)) {
-      throw new BarocertException('접수아이디가 입력되지 않았습니다.');
-    }
-
-    $result = $this->executeCURL('/KAKAO/ESign/Status/'. $ClientCode .'/'. $receiptID, $ClientCode);
-
-    $ResultESign = new ResultESign();
-    $ResultESign->fromJsonInfo($result);
-    return $ResultESign;
+  public function encAES256CBC($data){
+    $biv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC), MCRYPT_RAND);
+    $enc = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $this->Linkhub->getSecretKey(), pkcs7padding($data), MCRYPT_MODE_CBC, biv);
+    return base64_encode($biv . $enc);
   }
 
-  /**
-   * 전자서명 상태 확인(다건)
-   */
-  public function getBulkESignState($ClientCode, $receiptID)
-  {
-    if (is_null($ClientCode) || empty($ClientCode)) {
-      throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
-    }
-    if (is_null($receiptID) || empty($receiptID)) {
-      throw new BarocertException('접수아이디가 입력되지 않았습니다.');
-    }
-
-    $result = $this->executeCURL('/KAKAO/ESign/BulkStatus/' . $ClientCode .'/'. $receiptID, $ClientCode);
-
-    $BulkResultESign = new BulkResultESign();
-    $BulkResultESign->fromJsonInfo($result);
-    return $BulkResultESign;
-  }
-
-  /**
-   * 전자서명 검증(단건)
-   */
-  public function verifyESign($ClientCode, $receiptID)
-  {
-    if (is_null($ClientCode) || empty($ClientCode)) {
-      throw new BarocertException('접수아이디가 입력되지 않았습니다.');
-    }
-    if (is_null($receiptID) || empty($receiptID)) {
-      throw new BarocertException('접수아이디가 입력되지 않았습니다.');
-    }
-
-    $RequestVerify = new RequestVerify();
-    $RequestVerify->clientCode = $ClientCode;
-    $RequestVerify->receiptID = $receiptID;
-
-    $postdata = json_encode($RequestVerify);
-    
-    $result = $this->executeCURL('/KAKAO/ESign/Verify', $ClientCode, null, true, null, $postdata);
-
-    $ResultVerifyEsign = new ResultVerifyEsign();
-    $ResultVerifyEsign->fromJsonInfo($result);
-    return $ResultVerifyEsign;
-  }
-
-  /**
-   * 전자서명 검증(다건)
-   */
-  public function bulkVerifyESign($ClientCode, $receiptID)
-  {
-    if (is_null($ClientCode) || empty($ClientCode)) {
-      throw new BarocertException('접수아이디가 입력되지 않았습니다.');
-    }
-    if (is_null($receiptID) || empty($receiptID)) {
-      throw new BarocertException('접수아이디가 입력되지 않았습니다.');
-    }
-
-    $RequestVerify = new RequestVerify();
-    $RequestVerify->clientCode = $ClientCode;
-    $RequestVerify->receiptID = $receiptID;
-
-    $postdata = json_encode($RequestVerify);
-    
-    $result = $this->executeCURL('/KAKAO/ESign/BulkVerify', $ClientCode, null, true, null, $postdata);
-
-    $BulkVerifyResult = new BulkVerifyResult();
-    $BulkVerifyResult->fromJsonInfo($result);
-    return $BulkVerifyResult;
-  }
-
-  /**
+ /**
    * 본인인증 요청
    */
-  public function requestVerifyAuth($ClientCode, $RequestVerifyAuth, $appUseYN = false)
+  public function requestIdentity($ClientCode, $RequestIdentity)
   {
     if (is_null($ClientCode) || empty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (is_null($RequestVerifyAuth) || empty($RequestVerifyAuth)) {
+    if (is_null($RequestIdentity) || empty($RequestIdentity)) {
       throw new BarocertException('본인인증 요청정보가 입력되지 않았습니다.');
     }
 
-    $RequestVerifyAuth->clientCode = $ClientCode;
-    $RequestVerifyAuth->appUseYN = $appUseYN;
+    $RequestIdentity->clientCode = $ClientCode;
 
-    $postdata = json_encode($RequestVerifyAuth);
+    $postdata = json_encode($RequestIdentity);
     
-    $result = $this->executeCURL('/KAKAO/VerifyAuth/Request', $ClientCode, null, true, null, $postdata);
+    $result = $this->executeCURL('/KAKAO/Identity/' . $ClientCode, true, $postdata);
 
-    $ResultReqVerifyAuth = new ResultReqVerifyAuth();
-    $ResultReqVerifyAuth->fromJsonInfo($result);
-    return $ResultReqVerifyAuth;
+    $ResponseIdentity = new ResponseIdentity();
+    $ResponseIdentity->fromJsonInfo($result);
+    return $ResponseIdentity;
   }
 
   /**
    * 본인인증 상태확인
    */
-  public function getVerifyAuthState($ClientCode, $receiptID)
+  public function getIdentityStatus($ClientCode, $receiptID)
   {
     if (is_null($ClientCode) || empty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
@@ -424,17 +295,17 @@ class KakaocertService
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
 
-    $result = $this->executeCURL('/KAKAO/VerifyAuth/Status/' . $ClientCode .'/'. $receiptID, $ClientCode);
+    $result = $this->executeCURL('/KAKAO/Identity/' . $ClientCode .'/'. $receiptID, false, null);
 
-    $ResultVerifyAuthState = new ResultVerifyAuthState();
-    $ResultVerifyAuthState->fromJsonInfo($result);
-    return $ResultVerifyAuthState;
+    $ResponseIdentityStatus = new ResponseIdentityStatus();
+    $ResponseIdentityStatus->fromJsonInfo($result);
+    return $ResponseIdentityStatus;
   }
 
   /**
    * 본인인증 검증
    */
-  public function verifyAuth($ClientCode, $receiptID)
+  public function verifyIdentity($ClientCode, $receiptID)
   {
     if (is_null($ClientCode) || empty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
@@ -443,17 +314,138 @@ class KakaocertService
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
 
-    $result = $this->executeCURL('/KAKAO/VerifyAuth/Verify' . $receiptID, $ClientCode);
+    $result = $this->executeCURL('/KAKAO/Identity/' . $ClientCode .'/'. $receiptID, true, null);
 
-    $ResultVerifyAuth = new ResultVerifyAuth();
-    $ResultVerifyAuth->fromJsonInfo($result);
-    return $ResultVerifyAuth;
+    $ResponseVerifyIdentity = new ResponseVerifyIdentity();
+    $ResponseVerifyIdentity->fromJsonInfo($result);
+    return $ResponseVerifyIdentity;
+  }
+
+  /**
+   * 전자서명 요청(단건)
+   */
+  public function RequestSign($ClientCode, $RequestSign)
+  {
+    if (is_null($ClientCode) || empty($ClientCode)) {
+      throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
+    }
+    if (is_null($RequestSign) || empty($RequestSign)) {
+      throw new BarocertException('전자서명 요청정보가 입력되지 않았습니다.');
+    }
+
+    $RequestSign->clientCode = $ClientCode;
+
+    $postdata = json_encode($RequestSign);
+
+    $result = $this->executeCURL('/KAKAO/Sign/' . $ClientCode, true,  $postdata);
+
+    $ResponseSign = new ResponseSign();
+    $ResponseSign->fromJsonInfo($result);
+    return $ResponseSign;
+  }
+
+
+  /**
+   * 전자서명 상태 확인(단건)
+   */
+  public function getSignStatus($ClientCode, $receiptID)
+  {
+    if (is_null($ClientCode) || empty($ClientCode)) {
+      throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
+    }
+    if (is_null($receiptID) || empty($receiptID)) {
+      throw new BarocertException('접수아이디가 입력되지 않았습니다.');
+    }
+
+    $result = $this->executeCURL('/KAKAO/Sign/'. $ClientCode .'/'. $receiptID, false, null);
+
+    $ResponseSignStatus = new ResponseSignStatus();
+    $ResponseSignStatus->fromJsonInfo($result);
+    return $ResponseSignStatus;
+  }
+
+  /**
+   * 전자서명 검증(단건)
+   */
+  public function verifySign($ClientCode, $receiptID)
+  {
+    if (is_null($ClientCode) || empty($ClientCode)) {
+      throw new BarocertException('접수아이디가 입력되지 않았습니다.');
+    }
+    if (is_null($receiptID) || empty($receiptID)) {
+      throw new BarocertException('접수아이디가 입력되지 않았습니다.');
+    }
+    
+    $result = $this->executeCURL('/KAKAO/Sign/'. $ClientCode .'/'. $receiptID, true, null);
+
+    $ResponseVerifySign = new ResponseVerifySign();
+    $ResponseVerifySign->fromJsonInfo($result);
+    return $ResponseVerifySign;
+  }
+
+  /**
+   * 전자서명 요청(복수)
+   */
+  public function requestMultiSign($ClientCode, $RequestMultiSign)
+  {
+    if (is_null($ClientCode) || empty($ClientCode)) {
+      throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
+    }
+    if (is_null($RequestMultiSign) || empty($RequestMultiSign)) {
+      throw new BarocertException('전자서명 요청정보가 입력되지 않았습니다.');
+    }
+
+    $postdata = json_encode($RequestMultiSign);
+
+    $result = $this->executeCURL('/KAKAO/MultiSign/' . $ClientCode, true, $postdata);
+
+    $ResponseMultiSign = new ResponseMultiSign();
+    $ResponseMultiSign->fromJsonInfo($result);
+    return $ResponseMultiSign;
+  }
+
+  /**
+   * 전자서명 상태 확인(복수)
+   */
+  public function getMultiSignStatus($ClientCode, $receiptID)
+  {
+    if (is_null($ClientCode) || empty($ClientCode)) {
+      throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
+    }
+    if (is_null($receiptID) || empty($receiptID)) {
+      throw new BarocertException('접수아이디가 입력되지 않았습니다.');
+    }
+
+    $result = $this->executeCURL('/KAKAO/MultiSign/' . $ClientCode .'/'. $receiptID, false , null);
+
+    $ResponseMultiSignStatus = new ResponseMultiSignStatus();
+    $ResponseMultiSignStatus->fromJsonInfo($result);
+    return $ResponseMultiSignStatus;
+  }
+
+  /**
+   * 전자서명 검증(복수)
+   */
+  public function verifyMultiSign($ClientCode, $receiptID)
+  {
+    if (is_null($ClientCode) || empty($ClientCode)) {
+      throw new BarocertException('접수아이디가 입력되지 않았습니다.');
+    }
+    if (is_null($receiptID) || empty($receiptID)) {
+      throw new BarocertException('접수아이디가 입력되지 않았습니다.');
+    }
+    
+    $result = $this->executeCURL('/KAKAO/MultiSign/', $ClientCode .'/'. $receiptID, true, null);
+
+    $ResponseVerifyMultiSign = new ResponseVerifyMultiSign();
+    $ResponseVerifyMultiSign->fromJsonInfo($result);
+    return $ResponseVerifyMultiSign;
   }
 
   /**
    * 출금동의 요청
    */
-  public function requestCMS($ClientCode, $RequestCMS, $appUseYN = false)
+  public function requestCMS($ClientCode, $RequestCMS)
   {
     if (is_null($ClientCode) || empty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
@@ -462,12 +454,9 @@ class KakaocertService
       throw new BarocertException('자동이체 출금동의 요청정보가 입력되지 않았습니다.');
     }
 
-    $RequestCMS->clientCode = $ClientCode;
-    $RequestCMS->appUseYN = $appUseYN;
-
     $postdata = json_encode($RequestCMS);
     
-    $result = $this->executeCURL('/KAKAO/CMS/Request', $ClientCode, null, true, null, $postdata);
+    $result = $this->executeCURL('/KAKAO/CMS/' . $ClientCode, true, $postdata);
 
     $ResponseCMS = new ResponseCMS();
     $ResponseCMS->fromJsonInfo($result);
@@ -477,7 +466,7 @@ class KakaocertService
   /**
    * 출금동의 상태 확인
    */
-  public function getCMSState($ClientCode, $receiptID)
+  public function getCMSStatus($ClientCode, $receiptID)
   {
     if (is_null($ClientCode) || empty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
@@ -486,11 +475,11 @@ class KakaocertService
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
 
-    $result = $this->executeCURL('/KAKAO/CMS/Status/' . $ClientCode .'/'. $receiptID, $ClientCode);
+    $result = $this->executeCURL('/KAKAO/CMS/' . $ClientCode .'/'. $receiptID, false, null);
 
-    $ResultCMS = new ResultCMS();
-    $ResultCMS->fromJsonInfo($result);
-    return $ResultCMS;
+    $ResponseCMSStatus = new ResponseCMSStatus();
+    $ResponseCMSStatus->fromJsonInfo($result);
+    return $ResponseCMSStatus;
   }
 
   /**
@@ -505,18 +494,276 @@ class KakaocertService
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
 
-    $result = $this->executeCURL('/KAKAO/CMS/Verify', $ClientCode);
+    $result = $this->executeCURL('/KAKAO/CMS/'. $ClientCode .'/'. $receiptID, true, null);
 
-    $ResultVerifyCMS = new ResultVerifyCMS();
-    $ResultVerifyCMS->fromJsonInfo($result);
-    return $ResultVerifyCMS;
+    $ResponseVerifyCMS = new ResponseVerifyCMS();
+    $ResponseVerifyCMS->fromJsonInfo($result);
+    return $ResponseVerifyCMS;
   }
 
 }
 
+class RequestIdentity
+{
+	public $receiverHP;
+	public $receiverName;
+	public $receiverBirthday;
+	public $ci;	
+	public $reqTitle;
+	public $expireIn;
+	public $token;
+	public $returnURL;
+	public $appUseYN;
+}
+
+class ResponseIdentity
+{
+  public $receiptId;
+	public $scheme;
+
+  public function fromJsonInfo($jsonInfo)
+  {
+    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
+    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
+  }
+}
+
+class ResponseIdentityStatus
+{
+  public $receiptId;
+  public $clientCode;
+  public $state;
+  public $expireIn;
+  public $callCenterName;
+  public $callCenterNum;
+  public $reqTitle;
+  public $authCategory;
+  public $returnURL;
+  public $requestDT;
+  public $viewDT;
+  public $completeDT;
+  public $expireDT;
+  public $verifyDT;
+  public $scheme;
+  public $appUseYN;
+
+  public function fromJsonInfo($jsonInfo)
+  {
+    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
+    isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
+    isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
+    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
+    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;
+    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;
+    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;
+    isset($jsonInfo->authCategory) ? $this->authCategory = $jsonInfo->authCategory : null;
+    isset($jsonInfo->returnURL) ? $this->returnURL = $jsonInfo->returnURL : null;
+    isset($jsonInfo->requestDT) ? $this->requestDT = $jsonInfo->requestDT : null;
+    isset($jsonInfo->viewDT) ? $this->viewDT = $jsonInfo->viewDT : null;
+    isset($jsonInfo->completeDT) ? $this->completeDT = $jsonInfo->completeDT : null;
+    isset($jsonInfo->expireDT) ? $this->expireDT = $jsonInfo->expireDT : null;
+    isset($jsonInfo->verifyDT) ? $this->verifyDT = $jsonInfo->verifyDT : null;
+    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
+    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;
+  }
+}
+
+class ResponseVerifyIdentity
+{
+  public $receiptId;
+  public $state;
+  public $token;
+
+  public function fromJsonInfo($jsonInfo)
+  {
+    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
+    isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
+    isset($jsonInfo->token) ? $this->token = $jsonInfo->token : null;
+  }
+}
+
+
+
+class RequestSign
+{
+  public $receiverHP;
+  public $receiverName;
+  public $receiverBirthday;
+  public $ci;
+  public $reqTitle;
+  public $expireIn;
+  public $token;
+  public $tokenType;
+  public $returnURL;
+  public $appUseYN;
+}
+
+class ResponseSign
+{
+  public $receiptId;
+  public $scheme;
+
+  public function fromJsonInfo($jsonInfo)
+  {
+    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
+    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
+  }
+}
+
+
+class ResponseSignStatus
+{
+  public $receiptID;
+  public $clientCode;
+  public $state;
+  public $expireIn;
+  public $callCenterName;
+  public $callCenterNum;
+  public $reqTitle;
+  public $authCategory;
+  public $returnURL;
+  public $tokenType;
+  public $requestDT;
+  public $viewDT;
+  public $completeDT;
+  public $expireDT;
+  public $verifyDT;
+  public $scheme;
+  public $appUseYN;
+
+  public function fromJsonInfo($jsonInfo)
+  {
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
+    isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
+    isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
+    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
+    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;
+    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;
+    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;
+    isset($jsonInfo->authCategory) ? $this->authCategory = $jsonInfo->authCategory : null;
+    isset($jsonInfo->returnURL) ? $this->returnURL = $jsonInfo->returnURL : null;
+    isset($jsonInfo->tokenType) ? $this->tokenType = $jsonInfo->tokenType : null;
+    isset($jsonInfo->requestDT) ? $this->requestDT = $jsonInfo->requestDT : null;
+    isset($jsonInfo->viewDT) ? $this->viewDT = $jsonInfo->viewDT : null;
+    isset($jsonInfo->completeDT) ? $this->completeDT = $jsonInfo->completeDT : null;
+    isset($jsonInfo->expireDT) ? $this->expireDT = $jsonInfo->expireDT : null;
+    isset($jsonInfo->verifyDT) ? $this->verifyDT = $jsonInfo->verifyDT : null;
+    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
+    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;
+  }
+}
+
+class ResponseVerifySign
+{
+  public $receiptID;
+	public $state;
+	public $signedData;
+	public $ci;
+
+  public function fromJsonInfo($jsonInfo)
+  {
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
+    isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
+    isset($jsonInfo->signedData) ? $this->signedData = $jsonInfo->signedData : null;
+    isset($jsonInfo->ci) ? $this->ci = $jsonInfo->ci : null;
+  }
+}
+
+class RequestMultiSign
+{
+  public $receiverHP;
+  public $receiverName;
+  public $receiverBirthday;
+  public $ci;
+  public $reqTitle;
+  public $expireIn;
+
+  public $multiSignTokens;
+
+  public $tokenType;
+  public $returnURL;
+  public $appUseYN;
+}
+
+class MultiSignTokens
+{
+  public $reqTitle;
+  public $token;
+}
+
+class ResponseMultiSign
+{
+  public $receiptId;
+  public $scheme;
+
+  public function fromJsonInfo($jsonInfo)
+  {
+    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
+    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
+  }
+}
+
+class ResponseMultiSignStatus
+{
+  public $receiptID;
+  public $clientCode;
+  public $state;
+  public $expireIn;
+  public $callCenterName;
+  public $callCenterNum;
+  public $reqTitle;
+  public $authCategory;
+  public $returnURL;
+  public $tokenType;
+  public $requestDT;
+  public $viewDT;
+  public $completeDT;
+  public $expireDT;
+  public $verifyDT;
+  public $scheme;
+  public $appUseYN;
+
+  public function fromJsonInfo($jsonInfo)
+  {
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
+    isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
+    isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
+    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
+    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;
+    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;
+    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;
+    isset($jsonInfo->authCategory) ? $this->authCategory = $jsonInfo->authCategory : null;
+    isset($jsonInfo->returnURL) ? $this->returnURL = $jsonInfo->returnURL : null;
+    isset($jsonInfo->tokenType) ? $this->tokenType = $jsonInfo->tokenType : null;
+    isset($jsonInfo->requestDT) ? $this->requestDT = $jsonInfo->requestDT : null;
+    isset($jsonInfo->viewDT) ? $this->viewDT = $jsonInfo->viewDT : null;
+    isset($jsonInfo->completeDT) ? $this->completeDT = $jsonInfo->completeDT : null;
+    isset($jsonInfo->expireDT) ? $this->expireDT = $jsonInfo->expireDT : null;
+    isset($jsonInfo->verifyDT) ? $this->verifyDT = $jsonInfo->verifyDT : null;
+    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
+    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;
+  }
+}
+
+class ResponseVerifyMultiSign
+{
+  public $receiptID;
+	public $state;
+	public $multiSignedData;
+	public $ci;
+
+  public function fromJsonInfo($jsonInfo)
+  {
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
+    isset($jsonInfo->requestID) ? $this->requestID = $jsonInfo->requestID : null;
+    isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
+    isset($jsonInfo->multiSignedData) ? $this->multiSignedData = $jsonInfo->multiSignedData : null;
+    isset($jsonInfo->ci) ? $this->ci = $jsonInfo->ci : null;
+  }
+}
+
 class RequestCMS
 {
-  public $clientCode;
 	public $requestID;
 	public $receiverHP;
 	public $receiverName;
@@ -534,109 +781,6 @@ class RequestCMS
 	public $appUseYN;
 }
 
-class ResultCMS
-{
-  public $receiptID;
-  public $requestID;
-  public $clientCode;
-  public $state;
-  public $expireIn;
-  public $callCenterName;
-  public $callCenterNum;
-  public $reqTitle;
-  public $authCategory;
-  public $returnURL;
-  public $tokenType;
-  public $requestDT;
-  public $viewDT;
-  public $completeDT;
-  public $expireDT;
-  public $verifyDT;
-  public $scheme;
-  public $appUseYN;
-
-  public function fromJsonInfo($jsonInfo)
-  {
-    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
-    isset($jsonInfo->requestID) ? $this->requestID = $jsonInfo->requestID : null;
-    isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
-    isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
-    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
-    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;
-    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;
-    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;
-    isset($jsonInfo->authCategory) ? $this->authCategory = $jsonInfo->authCategory : null;
-    isset($jsonInfo->returnURL) ? $this->returnURL = $jsonInfo->returnURL : null;
-    isset($jsonInfo->tokenType) ? $this->tokenType = $jsonInfo->tokenType : null;
-    isset($jsonInfo->requestDT) ? $this->requestDT = $jsonInfo->requestDT : null;
-    isset($jsonInfo->viewDT) ? $this->viewDT = $jsonInfo->viewDT : null;
-    isset($jsonInfo->completeDT) ? $this->completeDT = $jsonInfo->completeDT : null;
-    isset($jsonInfo->expireDT) ? $this->expireDT = $jsonInfo->expireDT : null;
-    isset($jsonInfo->verifyDT) ? $this->verifyDT = $jsonInfo->verifyDT : null;
-    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
-    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;
-  }
-}
-
-class ResultVerifyAuthState
-{
-  public $receiptId;
-  public $requestId;
-  public $clientCode;
-  public $state;
-  public $expireIn;
-  public $callCenterName;
-  public $callCenterNum;
-  public $reqTitle;
-  public $authCategory;
-  public $returnURL;
-  public $tokenType;
-  public $requestDT;
-  public $viewDT;
-  public $completeDT;
-  public $expireDT;
-  public $verifyDT;
-  public $scheme;
-  public $appUseYN;
-
-  public function fromJsonInfo($jsonInfo)
-  {
-    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
-    isset($jsonInfo->requestId) ? $this->requestId = $jsonInfo->requestId : null;
-    isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
-    isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
-    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
-    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;
-    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;
-    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;
-    isset($jsonInfo->authCategory) ? $this->authCategory = $jsonInfo->authCategory : null;
-    isset($jsonInfo->returnURL) ? $this->returnURL = $jsonInfo->returnURL : null;
-    isset($jsonInfo->tokenType) ? $this->tokenType = $jsonInfo->tokenType : null;
-    isset($jsonInfo->requestDT) ? $this->requestDT = $jsonInfo->requestDT : null;
-    isset($jsonInfo->viewDT) ? $this->viewDT = $jsonInfo->viewDT : null;
-    isset($jsonInfo->completeDT) ? $this->completeDT = $jsonInfo->completeDT : null;
-    isset($jsonInfo->expireDT) ? $this->expireDT = $jsonInfo->expireDT : null;
-    isset($jsonInfo->verifyDT) ? $this->verifyDT = $jsonInfo->verifyDT : null;
-    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
-    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;
-  }
-}
-
-class ResultVerifyAuth
-{
-  public $receiptId;
-  public $requestId;
-  public $state;
-  public $token;
-
-  public function fromJsonInfo($jsonInfo)
-  {
-    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
-    isset($jsonInfo->requestId) ? $this->requestId = $jsonInfo->requestId : null;
-    isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
-    isset($jsonInfo->token) ? $this->token = $jsonInfo->token : null;
-  }
-}
 
 class ResponseCMS
 {
@@ -650,38 +794,9 @@ class ResponseCMS
   }
 }
 
-class RequestESign
-{
-  public $clientCode;
-  public $requestID;
-  public $receiverHP;
-  public $receiverName;
-  public $receiverBirthday;
-  public $ci;
-  public $reqTitle;
-  public $expireIn;
-  public $token;
-  public $tokenType;
-  public $returnURL;
-  public $appUseYN;
-}
-
-class ResponseESign
-{
-  public $receiptId;
-  public $scheme;
-
-  public function fromJsonInfo($jsonInfo)
-  {
-    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
-    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
-  }
-}
-
-class ResultESign
+class ResponseCMSStatus
 {
   public $receiptID;
-  public $requestID;
   public $clientCode;
   public $state;
   public $expireIn;
@@ -702,7 +817,6 @@ class ResultESign
   public function fromJsonInfo($jsonInfo)
   {
     isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
-    isset($jsonInfo->requestID) ? $this->requestID = $jsonInfo->requestID : null;
     isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
@@ -722,84 +836,9 @@ class ResultESign
   }
 }
 
-class BulkRequestESign
-{
-  public $clientCode;
-  public $requestID;
-  public $receiverHP;
-  public $receiverName;
-  public $receiverBirthday;
-  public $ci;
-  public $reqTitle;
-  public $expireIn;
-
-  public $tokens;
-
-  public $tokenType;
-  public $returnURL;
-  public $appUseYN;
-}
-
-class Tokens
-{
-  public $reqTitle;
-  public $token;
-}
-
-class BulkResultESign
+class ResponseVerifyCMS
 {
   public $receiptID;
-  public $requestID;
-  public $clientCode;
-  public $state;
-  public $expireIn;
-  public $callCenterName;
-  public $callCenterNum;
-  public $reqTitle;
-  public $authCategory;
-  public $returnURL;
-  public $tokenType;
-  public $requestDT;
-  public $viewDT;
-  public $completeDT;
-  public $expireDT;
-  public $verifyDT;
-  public $scheme;
-  public $appUseYN;
-
-  public function fromJsonInfo($jsonInfo)
-  {
-    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
-    isset($jsonInfo->requestID) ? $this->requestID = $jsonInfo->requestID : null;
-    isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
-    isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
-    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
-    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;
-    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;
-    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;
-    isset($jsonInfo->authCategory) ? $this->authCategory = $jsonInfo->authCategory : null;
-    isset($jsonInfo->returnURL) ? $this->returnURL = $jsonInfo->returnURL : null;
-    isset($jsonInfo->tokenType) ? $this->tokenType = $jsonInfo->tokenType : null;
-    isset($jsonInfo->requestDT) ? $this->requestDT = $jsonInfo->requestDT : null;
-    isset($jsonInfo->viewDT) ? $this->viewDT = $jsonInfo->viewDT : null;
-    isset($jsonInfo->completeDT) ? $this->completeDT = $jsonInfo->completeDT : null;
-    isset($jsonInfo->expireDT) ? $this->expireDT = $jsonInfo->expireDT : null;
-    isset($jsonInfo->verifyDT) ? $this->verifyDT = $jsonInfo->verifyDT : null;
-    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
-    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;
-  }
-}
-
-class RequestVerify 
-{
-  public $clientCode;
-  public $receiptID;
-}
-
-class ResultVerifyCMS
-{
-  public $receiptID;
-	public $requestID;
 	public $state;
 	public $signedData;
 	public $ci;
@@ -807,78 +846,12 @@ class ResultVerifyCMS
   public function fromJsonInfo($jsonInfo)
   {
     isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
-    isset($jsonInfo->requestID) ? $this->requestID = $jsonInfo->requestID : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->signedData) ? $this->signedData = $jsonInfo->signedData : null;
     isset($jsonInfo->ci) ? $this->ci = $jsonInfo->ci : null;
   }
 }
 
-class ResultVerifyEsign
-{
-  public $receiptID;
-	public $requestID;
-	public $state;
-	public $signedData;
-	public $ci;
-
-  public function fromJsonInfo($jsonInfo)
-  {
-    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
-    isset($jsonInfo->requestID) ? $this->requestID = $jsonInfo->requestID : null;
-    isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
-    isset($jsonInfo->signedData) ? $this->signedData = $jsonInfo->signedData : null;
-    isset($jsonInfo->ci) ? $this->ci = $jsonInfo->ci : null;
-  }
-}
-
-class BulkVerifyResult
-{
-  public $receiptID;
-	public $requestID;
-	public $state;
-	public $bulkSignedData;
-	public $ci;
-
-  public function fromJsonInfo($jsonInfo)
-  {
-    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
-    isset($jsonInfo->requestID) ? $this->requestID = $jsonInfo->requestID : null;
-    isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
-    isset($jsonInfo->bulkSignedData) ? $this->bulkSignedData = $jsonInfo->bulkSignedData : null;
-    isset($jsonInfo->ci) ? $this->ci = $jsonInfo->ci : null;
-  }
-}
-
-class ResultReqVerifyAuth
-{
-  public $receiptId;
-	public $scheme;
-
-  public function fromJsonInfo($jsonInfo)
-  {
-    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
-    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
-  }
-}
-
-class RequestVerifyAuth
-{
-  public $clientCode;
-	public $requestID;
-	public $receiverHP;
-	public $receiverName;
-	public $receiverBirthday;
-	public $ci;
-	
-	public $reqTitle;
-	public $expireIn;
-	
-	public $token;
-	public $returnURL;
-
-	public $appUseYN;
-}
 
 class BarocertException extends Exception
 {
