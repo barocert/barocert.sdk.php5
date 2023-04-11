@@ -192,7 +192,7 @@ class KakaocertService
       $header[] = 'x-bc-date: ' . $xDate;
       $header[] = 'x-bc-version: ' . '2.0';
       $header[] = 'x-bc-auth: ' . $digest;
-      
+      $header[] = 'x-bc-encryptionmode: ' . 'CBC';
 
       $params = array(
         'http' => array(
