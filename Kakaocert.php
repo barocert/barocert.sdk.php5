@@ -81,7 +81,7 @@ class KakaocertService
     $targetToken = null;
 
     if (array_key_exists($this->Linkhub->getLinkID(), $this->Token_Table)) {
-      $targetToken = $this->Token_Table[$CorpNum];
+      $targetToken = $this->Token_Table[$this->Linkhub->getLinkID()];
     }
 
     $Refresh = false;
