@@ -91,7 +91,7 @@ class KakaocertService
     } else {
       $Expiration = new DateTime($targetToken->expiration, new DateTimeZone("UTC"));
 
-      $now = $this->Linkhub->getTime($this->UseStaticIP, $this->UseLocalTimeYN, $this->UseGAIP);
+      $now = $this->Linkhub->getTime($this->UseStaticIP, $this->UseLocalTimeYN, false);
       $Refresh = $Expiration < $now;
     }
 
@@ -122,23 +122,24 @@ class KakaocertService
         curl_setopt($http, CURLOPT_POST, 1);
         curl_setopt($http, CURLOPT_POSTFIELDS, $postdata);
 
-        $xDate = $this->Linkhub->getTime($this->UseStaticIP, false, $this->UseGAIP);
+        $xDate = $this->Linkhub->getTime($this->UseStaticIP, false, false);
 
         $digestTarget = 'POST' . chr(10);
 
-        $digestTarget = $digestTarget . uri . chr(10);
+        $digestTarget = $digestTarget . $uri . chr(10);
 
-        $digestTarget = $digestTarget . base64_encode(hash('sha256', $postdata, true)) . chr(10);
+        if($postdata){
+          $digestTarget = $digestTarget . base64_encode(hash('sha256', $postdata, true)) . chr(10);
+        }
 
         $digestTarget = $digestTarget . $xDate . chr(10);
-
-        $digestTarget = $digestTarget . '2.0' . chr(10);
 
         $digest = base64_encode(hash_hmac('sha256', $digestTarget, base64_decode(strtr($this->Linkhub->getSecretKey(), '-_', '+/')), true));
 
         $header[] = 'x-bc-date: ' . $xDate;
         $header[] = 'x-bc-version: ' . '2.0';
         $header[] = 'x-bc-auth: ' .  $digest;
+        $header[] = 'x-bc-encryptionmode: ' . 'CBC';
       }
 
       curl_setopt($http, CURLOPT_HTTPHEADER, $header);
@@ -175,17 +176,15 @@ class KakaocertService
       $header[] = 'Content-Type: Application/json';
       $postbody = $postdata;
 
-      $xDate = $this->Linkhub->getTime($this->UseStaticIP, false, $this->UseGAIP);
+      $xDate = $this->Linkhub->getTime($this->UseStaticIP, false, false);
 
       $digestTarget = 'POST' . chr(10);
       
-      $digestTarget = $digestTarget . uri . chr(10);
+      $digestTarget = $digestTarget . $uri . chr(10);
 
       $digestTarget = $digestTarget . base64_encode(hash('sha256', $postdata, true)) . chr(10);
       
       $digestTarget = $digestTarget . $xDate . chr(10);
-
-      $digestTarget = $digestTarget . '2.0' . chr(10);
 
       $digest = base64_encode(hash_hmac('sha256', $digestTarget, base64_decode(strtr($this->Linkhub->getSecretKey(), '-_', '+/')), true));
 
@@ -245,7 +244,7 @@ class KakaocertService
 
 
   public function encrypt($data){
-    return encAES256CBC($data);
+    return $this->encAES256CBC($data);
   }
 
   function pkcs7padding($data){
@@ -256,7 +255,7 @@ class KakaocertService
 
   public function encAES256CBC($data){
     $biv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC), MCRYPT_RAND);
-    $enc = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $this->Linkhub->getSecretKey(), pkcs7padding($data), MCRYPT_MODE_CBC, biv);
+    $enc = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, base64_decode($this->Linkhub->getSecretKey()), $this->pkcs7padding($data), MCRYPT_MODE_CBC, $biv);
     return base64_encode($biv . $enc);
   }
 
@@ -268,11 +267,36 @@ class KakaocertService
     if (is_null($ClientCode) || empty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
+    if (ereg("[^0-9]", $ClientCode)) {
+      throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($ClientCode) != 12) {
+      throw new BarocertException('이용기관코드는 12자 입니다.');
+    }
     if (is_null($RequestIdentity) || empty($RequestIdentity)) {
       throw new BarocertException('본인인증 요청정보가 입력되지 않았습니다.');
     }
+    if (is_null($RequestIdentity->ci) || empty($RequestIdentity->ci)) {
+      if (is_null($RequestIdentity->receiverHP) || empty($RequestIdentity->receiverHP)) {
+        throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
+      }
+      if (is_null($RequestIdentity->receiverName) || empty($RequestIdentity->receiverName)) {
+        throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
+      }
+      if (is_null($RequestIdentity->receiverBirthday) || empty($RequestIdentity->receiverBirthday)) {
+        throw new BarocertException('생년월일이 입력되지 않았습니다.');
+      }
+    }
 
-    $RequestIdentity->clientCode = $ClientCode;
+    if (is_null($RequestIdentity->expireIn) || empty($RequestIdentity->expireIn)) {
+      throw new BarocertException('만료시간이 입력되지 않았습니다.');
+    }
+    if (is_null($RequestIdentity->reqTitle) || empty($RequestIdentity->reqTitle)) {
+      throw new BarocertException('인증요청 메시지 제목이 입력되지 않았습니다.');
+    }
+    if (is_null($RequestIdentity->token) || empty($RequestIdentity->token)) {
+      throw new BarocertException('토큰 원문이 입력되지 않았습니다.');
+    }
 
     $postdata = json_encode($RequestIdentity);
     
@@ -291,8 +315,20 @@ class KakaocertService
     if (is_null($ClientCode) || empty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
+    if (ereg("[^0-9]", $ClientCode)) {
+      throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($ClientCode) != 12) {
+      throw new BarocertException('이용기관코드는 12자 입니다.');
+    }
     if (is_null($receiptID) || empty($receiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
+    }
+    if (ereg("[^0-9]", $receiptID)) {
+      throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($receiptID) != 32) {
+      throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
     $result = $this->executeCURL('/KAKAO/Identity/' . $ClientCode .'/'. $receiptID, false, null);
@@ -310,8 +346,20 @@ class KakaocertService
     if (is_null($ClientCode) || empty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
+    if (ereg("[^0-9]", $ClientCode)) {
+      throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($ClientCode) != 12) {
+      throw new BarocertException('이용기관코드는 12자 입니다.');
+    }
     if (is_null($receiptID) || empty($receiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
+    }
+    if (ereg("[^0-9]", $receiptID)) {
+      throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($receiptID) != 32) {
+      throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
     $result = $this->executeCURL('/KAKAO/Identity/' . $ClientCode .'/'. $receiptID, true, null);
@@ -329,11 +377,38 @@ class KakaocertService
     if (is_null($ClientCode) || empty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
+    if (ereg("[^0-9]", $ClientCode)) {
+      throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($ClientCode) != 12) {
+      throw new BarocertException('이용기관코드는 12자 입니다.');
+    }
     if (is_null($RequestSign) || empty($RequestSign)) {
       throw new BarocertException('전자서명 요청정보가 입력되지 않았습니다.');
     }
-
-    $RequestSign->clientCode = $ClientCode;
+    if (is_null($RequestSign->ci) || empty($RequestSign->ci)) {
+      if (is_null($RequestSign->receiverHP) || empty($RequestSign->receiverHP)) {
+        throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
+      }
+      if (is_null($RequestSign->receiverName) || empty($RequestSign->receiverName)) {
+        throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
+      }
+      if (is_null($RequestSign->receiverBirthday) || empty($RequestSign->receiverBirthday)) {
+        throw new BarocertException('생년월일이 입력되지 않았습니다.');
+      }
+    }
+    if (is_null($RequestSign->expireIn) || empty($RequestSign->expireIn)) {
+      throw new BarocertException('만료시간이 입력되지 않았습니다.');
+    }
+    if (is_null($RequestSign->reqTitle) || empty($RequestSign->reqTitle)) {
+      throw new BarocertException('인증요청 메시지 제목이 입력되지 않았습니다.');
+    }
+    if (is_null($RequestSign->token) || empty($RequestSign->token)) {
+      throw new BarocertException('토큰 원문이 입력되지 않았습니다.');
+    }
+    if (is_null($RequestSign->tokenType) || empty($RequestSign->tokenType)) {
+      throw new BarocertException('원문 유형이 입력되지 않았습니다.');
+    }
 
     $postdata = json_encode($RequestSign);
 
@@ -353,8 +428,20 @@ class KakaocertService
     if (is_null($ClientCode) || empty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
+    if (ereg("[^0-9]", $ClientCode)) {
+      throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($ClientCode) != 12) {
+      throw new BarocertException('이용기관코드는 12자 입니다.');
+    }
     if (is_null($receiptID) || empty($receiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
+    }
+    if (ereg("[^0-9]", $receiptID)) {
+      throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($receiptID) != 32) {
+      throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
     $result = $this->executeCURL('/KAKAO/Sign/'. $ClientCode .'/'. $receiptID, false, null);
@@ -370,10 +457,22 @@ class KakaocertService
   public function verifySign($ClientCode, $receiptID)
   {
     if (is_null($ClientCode) || empty($ClientCode)) {
-      throw new BarocertException('접수아이디가 입력되지 않았습니다.');
+      throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
+    }
+    if (ereg("[^0-9]", $ClientCode)) {
+      throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($ClientCode) != 12) {
+      throw new BarocertException('이용기관코드는 12자 입니다.');
     }
     if (is_null($receiptID) || empty($receiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
+    }
+    if (ereg("[^0-9]", $receiptID)) {
+      throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($receiptID) != 32) {
+      throw new BarocertException('접수아이디는 32자 입니다.');
     }
     
     $result = $this->executeCURL('/KAKAO/Sign/'. $ClientCode .'/'. $receiptID, true, null);
@@ -391,12 +490,44 @@ class KakaocertService
     if (is_null($ClientCode) || empty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
+    if (is_null($ClientCode) || empty($ClientCode)) {
+      throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
+    }
+    if (ereg("[^0-9]", $ClientCode)) {
+      throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($ClientCode) != 12) {
+      throw new BarocertException('이용기관코드는 12자 입니다.');
+    }
     if (is_null($RequestMultiSign) || empty($RequestMultiSign)) {
       throw new BarocertException('전자서명 요청정보가 입력되지 않았습니다.');
     }
+    if (is_null($RequestMultiSign->ci) || empty($RequestMultiSign->ci)) {
+      if (is_null($RequestMultiSign->receiverHP) || empty($RequestMultiSign->receiverHP)) {
+        throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
+      }
+      if (is_null($RequestMultiSign->receiverName) || empty($RequestMultiSign->receiverName)) {
+        throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
+      }
+      if (is_null($RequestMultiSign->receiverBirthday) || empty($RequestMultiSign->receiverBirthday)) {
+        throw new BarocertException('생년월일이 입력되지 않았습니다.');
+      }
+    }
+    if (is_null($RequestMultiSign->expireIn) || empty($RequestMultiSign->expireIn)) {
+      throw new BarocertException('만료시간이 입력되지 않았습니다.');
+    }
+    if ($this->isNullorEmptyTitle($RequestMultiSign->tokens)) {
+      throw new BarocertException('인증요청 메시지 제목이 입력되지 않았습니다.');
+    }
+    if ($this->isNullorEmptyToken($RequestMultiSign->tokens)) {
+      throw new BarocertException('토큰 원문이 입력되지 않았습니다.');
+    }
+    if (is_null($RequestMultiSign->tokenType) || empty($RequestMultiSign->tokenType)) {
+      throw new BarocertException('원문 유형이 입력되지 않았습니다.');
+    }
+
 
     $postdata = json_encode($RequestMultiSign);
-
     $result = $this->executeCURL('/KAKAO/MultiSign/' . $ClientCode, true, $postdata);
 
     $ResponseMultiSign = new ResponseMultiSign();
@@ -412,8 +543,20 @@ class KakaocertService
     if (is_null($ClientCode) || empty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
+    if (ereg("[^0-9]", $ClientCode)) {
+      throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($ClientCode) != 12) {
+      throw new BarocertException('이용기관코드는 12자 입니다.');
+    }
     if (is_null($receiptID) || empty($receiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
+    }
+    if (ereg("[^0-9]", $receiptID)) {
+      throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($receiptID) != 32) {
+      throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
     $result = $this->executeCURL('/KAKAO/MultiSign/' . $ClientCode .'/'. $receiptID, false , null);
@@ -429,13 +572,25 @@ class KakaocertService
   public function verifyMultiSign($ClientCode, $receiptID)
   {
     if (is_null($ClientCode) || empty($ClientCode)) {
-      throw new BarocertException('접수아이디가 입력되지 않았습니다.');
+      throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
+    }
+    if (ereg("[^0-9]", $ClientCode)) {
+      throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($ClientCode) != 12) {
+      throw new BarocertException('이용기관코드는 12자 입니다.');
     }
     if (is_null($receiptID) || empty($receiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
+    if (ereg("[^0-9]", $receiptID)) {
+      throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($receiptID) != 32) {
+      throw new BarocertException('접수아이디는 32자 입니다.');
+    }
     
-    $result = $this->executeCURL('/KAKAO/MultiSign/', $ClientCode .'/'. $receiptID, true, null);
+    $result = $this->executeCURL('/KAKAO/MultiSign/'. $ClientCode .'/'. $receiptID, true, null);
 
     $ResponseVerifyMultiSign = new ResponseVerifyMultiSign();
     $ResponseVerifyMultiSign->fromJsonInfo($result);
@@ -450,8 +605,49 @@ class KakaocertService
     if (is_null($ClientCode) || empty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
+    if (ereg("[^0-9]", $ClientCode)) {
+      throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($ClientCode) != 12) {
+      throw new BarocertException('이용기관코드는 12자 입니다.');
+    }
     if (is_null($RequestCMS) || empty($RequestCMS)) {
       throw new BarocertException('자동이체 출금동의 요청정보가 입력되지 않았습니다.');
+    }
+    if (is_null($RequestCMS->ci) || empty($RequestCMS->ci)) {
+      if (is_null($RequestCMS->receiverHP) || empty($RequestCMS->receiverHP)) {
+        throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
+      }
+      if (is_null($RequestCMS->receiverName) || empty($RequestCMS->receiverName)) {
+        throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
+      }
+      if (is_null($RequestCMS->receiverBirthday) || empty($RequestCMS->receiverBirthday)) {
+        throw new BarocertException('생년월일이 입력되지 않았습니다.');
+      }
+    }
+    if (is_null($RequestCMS->expireIn) || empty($RequestCMS->expireIn)) {
+      throw new BarocertException('만료시간이 입력되지 않았습니다.');
+    }
+    if (is_null($RequestCMS->reqTitle) || empty($RequestCMS->reqTitle)) {
+      throw new BarocertException('인증요청 메시지 제목이 입력되지 않았습니다.');
+    }
+    if (is_null($RequestCMS->requestCorp) || empty($RequestCMS->requestCorp)) {
+      throw new BarocertException('청구기관명이 입력되지 않았습니다.');
+    }
+    if (is_null($RequestCMS->bankName) || empty($RequestCMS->bankName)) {
+      throw new BarocertException('은행명이 입력되지 않았습니다.');
+    }
+    if (is_null($RequestCMS->bankAccountNum) || empty($RequestCMS->bankAccountNum)) {
+      throw new BarocertException('계좌번호가 입력되지 않았습니다.');
+    }
+    if (is_null($RequestCMS->bankAccountName) || empty($RequestCMS->bankAccountName)) {
+      throw new BarocertException('예금주명이 입력되지 않았습니다.');
+    }
+    if (is_null($RequestCMS->bankAccountBirthday) || empty($RequestCMS->bankAccountBirthday)) {
+      throw new BarocertException('예금주 생년월일이 입력되지 않았습니다.');
+    }
+    if (is_null($RequestCMS->bankServiceType) || empty($RequestCMS->bankServiceType)) {
+      throw new BarocertException('출금 유형이 입력되지 않았습니다.');
     }
 
     $postdata = json_encode($RequestCMS);
@@ -471,8 +667,20 @@ class KakaocertService
     if (is_null($ClientCode) || empty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
+    if (ereg("[^0-9]", $ClientCode)) {
+      throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($ClientCode) != 12) {
+      throw new BarocertException('이용기관코드는 12자 입니다.');
+    }
     if (is_null($receiptID) || empty($receiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
+    }
+    if (ereg("[^0-9]", $receiptID)) {
+      throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($receiptID) != 32) {
+      throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
     $result = $this->executeCURL('/KAKAO/CMS/' . $ClientCode .'/'. $receiptID, false, null);
@@ -490,8 +698,20 @@ class KakaocertService
     if (is_null($ClientCode) || empty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
+    if (ereg("[^0-9]", $ClientCode)) {
+      throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($ClientCode) != 12) {
+      throw new BarocertException('이용기관코드는 12자 입니다.');
+    }
     if (is_null($receiptID) || empty($receiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
+    }
+    if (ereg("[^0-9]", $receiptID)) {
+      throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($receiptID) != 32) {
+      throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
     $result = $this->executeCURL('/KAKAO/CMS/'. $ClientCode .'/'. $receiptID, true, null);
@@ -499,6 +719,28 @@ class KakaocertService
     $ResponseVerifyCMS = new ResponseVerifyCMS();
     $ResponseVerifyCMS->fromJsonInfo($result);
     return $ResponseVerifyCMS;
+  }
+
+  public function isNullorEmptyTitle($multiSignTokens){
+    if($multiSignTokens == null) return true;
+    foreach($multiSignTokens as $signTokens){
+      if($signTokens == null) return true;
+      if (is_null($signTokens -> reqTitle) || empty($signTokens -> reqTitle)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public function isNullorEmptyToken($multiSignTokens){
+    if($multiSignTokens == null) return true;
+    foreach($multiSignTokens as $signTokens){
+      if($signTokens == null) return true;
+      if (is_null($signTokens -> token) || empty($signTokens -> token)) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }
@@ -518,19 +760,19 @@ class RequestIdentity
 
 class ResponseIdentity
 {
-  public $receiptId;
+  public $receiptID;
 	public $scheme;
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
   }
 }
 
 class ResponseIdentityStatus
 {
-  public $receiptId;
+  public $receiptID;
   public $clientCode;
   public $state;
   public $expireIn;
@@ -549,7 +791,7 @@ class ResponseIdentityStatus
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
@@ -570,15 +812,15 @@ class ResponseIdentityStatus
 
 class ResponseVerifyIdentity
 {
-  public $receiptId;
+  public $receiptID;
   public $state;
-  public $token;
+  public $signedData;
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
-    isset($jsonInfo->token) ? $this->token = $jsonInfo->token : null;
+    isset($jsonInfo->signedData) ? $this->signedData = $jsonInfo->signedData : null;
   }
 }
 
@@ -600,12 +842,12 @@ class RequestSign
 
 class ResponseSign
 {
-  public $receiptId;
+  public $receiptID;
   public $scheme;
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
   }
 }
@@ -678,7 +920,7 @@ class RequestMultiSign
   public $reqTitle;
   public $expireIn;
 
-  public $multiSignTokens;
+  public $tokens;
 
   public $tokenType;
   public $returnURL;
@@ -693,12 +935,12 @@ class MultiSignTokens
 
 class ResponseMultiSign
 {
-  public $receiptId;
+  public $receiptID;
   public $scheme;
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
   }
 }
@@ -784,12 +1026,12 @@ class RequestCMS
 
 class ResponseCMS
 {
-  public $receiptId;
+  public $receiptID;
   public $scheme;
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
   }
 }
