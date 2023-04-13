@@ -10,7 +10,7 @@
  * be installed and enabled.
  *
  * https://www.linkhub.co.kr
- * Author : lsh (code@linkhubcorp.com)
+ * Author : lsh (dev@linkhubcorp.com)
  * Written : 2023-03-13
  * Updated : 2023-04-11
  *
@@ -159,10 +159,6 @@ class KakaocertService
         throw new BarocertException($responseJson);
       }
 
-      if (0 === mb_strpos($contentType, 'application/pdf')) {
-        return $responseJson;
-      }
-
       return json_decode($responseJson);
     } else {
       $header = array();
@@ -222,16 +218,6 @@ class KakaocertService
 
       if ($http_response_header[0] != "HTTP/1.1 200 OK") {
         throw new BarocertException($response);
-      }
-
-      foreach ($http_response_header as $k => $v) {
-        $t = explode(':', $v, 2);
-        if (preg_match('/^Content-Type:/i', $v, $out)) {
-          $contentType = trim($t[1]);
-          if (0 === mb_strpos($contentType, 'application/pdf')) {
-            return $response;
-          }
-        }
       }
 
       return json_decode($response);
