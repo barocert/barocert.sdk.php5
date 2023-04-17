@@ -742,19 +742,19 @@ class KakaoIdentity
 
 class KakaoIdentityReceipt
 {
-  public $ReceiptID;
+  public $receiptID;
 	public $scheme;
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->ReceiptID) ? $this->ReceiptID = $jsonInfo->ReceiptID : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
   }
 }
 
 class KakaoIdentityStatus
 {
-  public $ReceiptID;
+  public $receiptID;
   public $clientCode;
   public $state;
   public $expireIn;
@@ -773,7 +773,7 @@ class KakaoIdentityStatus
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->ReceiptID) ? $this->ReceiptID = $jsonInfo->ReceiptID : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
@@ -794,13 +794,13 @@ class KakaoIdentityStatus
 
 class KakaoIdentityResult
 {
-  public $ReceiptID;
+  public $receiptID;
   public $state;
   public $signedData;
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->ReceiptID) ? $this->ReceiptID = $jsonInfo->ReceiptID : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->signedData) ? $this->signedData = $jsonInfo->signedData : null;
   }
@@ -824,12 +824,12 @@ class KakaoSign
 
 class KakaoSignReceipt
 {
-  public $ReceiptID;
+  public $receiptID;
   public $scheme;
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->ReceiptID) ? $this->ReceiptID = $jsonInfo->ReceiptID : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
   }
 }
@@ -837,7 +837,7 @@ class KakaoSignReceipt
 
 class KakaoSignStatus
 {
-  public $ReceiptID;
+  public $receiptID;
   public $clientCode;
   public $state;
   public $expireIn;
@@ -857,7 +857,7 @@ class KakaoSignStatus
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->ReceiptID) ? $this->ReceiptID = $jsonInfo->ReceiptID : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
@@ -879,14 +879,14 @@ class KakaoSignStatus
 
 class KakaoSignResult
 {
-  public $ReceiptID;
+  public $receiptID;
 	public $state;
 	public $signedData;
 	public $ci;
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->ReceiptID) ? $this->ReceiptID = $jsonInfo->ReceiptID : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->signedData) ? $this->signedData = $jsonInfo->signedData : null;
     isset($jsonInfo->ci) ? $this->ci = $jsonInfo->ci : null;
@@ -917,19 +917,19 @@ class KakaoMultiSignTokens
 
 class KakaoMultiSignReceipt
 {
-  public $ReceiptID;
+  public $receiptID;
   public $scheme;
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->ReceiptID) ? $this->ReceiptID = $jsonInfo->ReceiptID : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
   }
 }
 
 class KakaoMultiSignStatus
 {
-  public $ReceiptID;
+  public $receiptID;
   public $clientCode;
   public $state;
   public $expireIn;
@@ -949,7 +949,7 @@ class KakaoMultiSignStatus
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->ReceiptID) ? $this->ReceiptID = $jsonInfo->ReceiptID : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
@@ -971,14 +971,14 @@ class KakaoMultiSignStatus
 
 class KakaoMultiSignResult
 {
-  public $ReceiptID;
+  public $receiptID;
 	public $state;
 	public $multiSignedData;
 	public $ci;
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->ReceiptID) ? $this->ReceiptID = $jsonInfo->ReceiptID : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->requestID) ? $this->requestID = $jsonInfo->requestID : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->multiSignedData) ? $this->multiSignedData = $jsonInfo->multiSignedData : null;
@@ -1008,19 +1008,19 @@ class KakaoCMS
 
 class KakaoCMSReceipt
 {
-  public $ReceiptID;
+  public $receiptID;
   public $scheme;
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->ReceiptID) ? $this->ReceiptID = $jsonInfo->ReceiptID : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
   }
 }
 
 class KakaoCMSStatus
 {
-  public $ReceiptID;
+  public $receiptID;
   public $clientCode;
   public $state;
   public $expireIn;
@@ -1040,7 +1040,7 @@ class KakaoCMSStatus
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->ReceiptID) ? $this->ReceiptID = $jsonInfo->ReceiptID : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
@@ -1062,14 +1062,14 @@ class KakaoCMSStatus
 
 class KakaoCMSResult
 {
-  public $ReceiptID;
+  public $receiptID;
 	public $state;
 	public $signedData;
 	public $ci;
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->ReceiptID) ? $this->ReceiptID = $jsonInfo->ReceiptID : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->signedData) ? $this->signedData = $jsonInfo->signedData : null;
     isset($jsonInfo->ci) ? $this->ci = $jsonInfo->ci : null;
