@@ -396,9 +396,9 @@ class KakaocertService
 
     $result = $this->executeCURL('/KAKAO/Sign/' . $ClientCode, true,  $postdata);
 
-    $KakaoSign = new KakaoSign();
-    $KakaoSign->fromJsonInfo($result);
-    return $KakaoSign;
+    $KakaoSignReceipt = new KakaoSignReceipt();
+    $KakaoSignReceipt->fromJsonInfo($result);
+    return $KakaoSignReceipt;
   }
 
 
@@ -822,7 +822,7 @@ class KakaoSign
   public $appUseYN;
 }
 
-class KakaoSign
+class KakaoSignReceipt
 {
   public $ReceiptID;
   public $scheme;
