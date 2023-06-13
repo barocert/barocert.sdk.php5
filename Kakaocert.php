@@ -12,7 +12,7 @@
  * https://www.linkhub.co.kr
  * Author : linkhub dev (dev@linkhubcorp.com)
  * Written : 2023-03-13
- * Updated : 2023-04-11
+ * Updated : 2023-06-13
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
@@ -258,16 +258,14 @@ class KakaocertService
     if (is_null($KakaoIdentity) || empty($KakaoIdentity)) {
       throw new BarocertException('본인인증 요청정보가 입력되지 않았습니다.');
     }
-    if (is_null($KakaoIdentity->ci) || empty($KakaoIdentity->ci)) {
-      if (is_null($KakaoIdentity->receiverHP) || empty($KakaoIdentity->receiverHP)) {
-        throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
-      }
-      if (is_null($KakaoIdentity->receiverName) || empty($KakaoIdentity->receiverName)) {
-        throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
-      }
-      if (is_null($KakaoIdentity->receiverBirthday) || empty($KakaoIdentity->receiverBirthday)) {
-        throw new BarocertException('생년월일이 입력되지 않았습니다.');
-      }
+    if (is_null($KakaoIdentity->receiverHP) || empty($KakaoIdentity->receiverHP)) {
+      throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
+    }
+    if (is_null($KakaoIdentity->receiverName) || empty($KakaoIdentity->receiverName)) {
+      throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
+    }
+    if (is_null($KakaoIdentity->receiverBirthday) || empty($KakaoIdentity->receiverBirthday)) {
+      throw new BarocertException('생년월일이 입력되지 않았습니다.');
     }
 
     if (is_null($KakaoIdentity->expireIn) || empty($KakaoIdentity->expireIn)) {
@@ -368,16 +366,14 @@ class KakaocertService
     if (is_null($KakaoSign) || empty($KakaoSign)) {
       throw new BarocertException('전자서명 요청정보가 입력되지 않았습니다.');
     }
-    if (is_null($KakaoSign->ci) || empty($KakaoSign->ci)) {
-      if (is_null($KakaoSign->receiverHP) || empty($KakaoSign->receiverHP)) {
-        throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
-      }
-      if (is_null($KakaoSign->receiverName) || empty($KakaoSign->receiverName)) {
-        throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
-      }
-      if (is_null($KakaoSign->receiverBirthday) || empty($KakaoSign->receiverBirthday)) {
-        throw new BarocertException('생년월일이 입력되지 않았습니다.');
-      }
+    if (is_null($KakaoSign->receiverHP) || empty($KakaoSign->receiverHP)) {
+      throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
+    }
+    if (is_null($KakaoSign->receiverName) || empty($KakaoSign->receiverName)) {
+      throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
+    }
+    if (is_null($KakaoSign->receiverBirthday) || empty($KakaoSign->receiverBirthday)) {
+      throw new BarocertException('생년월일이 입력되지 않았습니다.');
     }
     if (is_null($KakaoSign->expireIn) || empty($KakaoSign->expireIn)) {
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
@@ -484,16 +480,14 @@ class KakaocertService
     if (is_null($KakaoMultiSign) || empty($KakaoMultiSign)) {
       throw new BarocertException('전자서명 요청정보가 입력되지 않았습니다.');
     }
-    if (is_null($KakaoMultiSign->ci) || empty($KakaoMultiSign->ci)) {
-      if (is_null($KakaoMultiSign->receiverHP) || empty($KakaoMultiSign->receiverHP)) {
-        throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
-      }
-      if (is_null($KakaoMultiSign->receiverName) || empty($KakaoMultiSign->receiverName)) {
-        throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
-      }
-      if (is_null($KakaoMultiSign->receiverBirthday) || empty($KakaoMultiSign->receiverBirthday)) {
-        throw new BarocertException('생년월일이 입력되지 않았습니다.');
-      }
+    if (is_null($KakaoMultiSign->receiverHP) || empty($KakaoMultiSign->receiverHP)) {
+      throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
+    }
+    if (is_null($KakaoMultiSign->receiverName) || empty($KakaoMultiSign->receiverName)) {
+      throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
+    }
+    if (is_null($KakaoMultiSign->receiverBirthday) || empty($KakaoMultiSign->receiverBirthday)) {
+      throw new BarocertException('생년월일이 입력되지 않았습니다.');
     }
     if (is_null($KakaoMultiSign->expireIn) || empty($KakaoMultiSign->expireIn)) {
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
@@ -596,16 +590,14 @@ class KakaocertService
     if (is_null($KakaoCMS) || empty($KakaoCMS)) {
       throw new BarocertException('자동이체 출금동의 요청정보가 입력되지 않았습니다.');
     }
-    if (is_null($KakaoCMS->ci) || empty($KakaoCMS->ci)) {
-      if (is_null($KakaoCMS->receiverHP) || empty($KakaoCMS->receiverHP)) {
-        throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
-      }
-      if (is_null($KakaoCMS->receiverName) || empty($KakaoCMS->receiverName)) {
-        throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
-      }
-      if (is_null($KakaoCMS->receiverBirthday) || empty($KakaoCMS->receiverBirthday)) {
-        throw new BarocertException('생년월일이 입력되지 않았습니다.');
-      }
+    if (is_null($KakaoCMS->receiverHP) || empty($KakaoCMS->receiverHP)) {
+      throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
+    }
+    if (is_null($KakaoCMS->receiverName) || empty($KakaoCMS->receiverName)) {
+      throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
+    }
+    if (is_null($KakaoCMS->receiverBirthday) || empty($KakaoCMS->receiverBirthday)) {
+      throw new BarocertException('생년월일이 입력되지 않았습니다.');
     }
     if (is_null($KakaoCMS->expireIn) || empty($KakaoCMS->expireIn)) {
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
@@ -732,7 +724,6 @@ class KakaoIdentity
 	public $receiverHP;
 	public $receiverName;
 	public $receiverBirthday;
-	public $ci;	
 	public $reqTitle;
 	public $expireIn;
 	public $token;
@@ -813,7 +804,6 @@ class KakaoSign
   public $receiverHP;
   public $receiverName;
   public $receiverBirthday;
-  public $ci;
   public $reqTitle;
   public $expireIn;
   public $token;
@@ -898,7 +888,6 @@ class KakaoMultiSign
   public $receiverHP;
   public $receiverName;
   public $receiverBirthday;
-  public $ci;
   public $reqTitle;
   public $expireIn;
 
@@ -992,7 +981,6 @@ class KakaoCMS
 	public $receiverHP;
 	public $receiverName;
 	public $receiverBirthday;
-	public $ci;
 	public $reqTitle;
 	public $expireIn;
 	public $returnURL;	
