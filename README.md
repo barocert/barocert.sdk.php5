@@ -1,7 +1,7 @@
-barocert.sdk.example.php5
+barocert.sdk.php5
 ==============================
 
-Barocert SDK Example for PHP 5  
+Barocert SDK for PHP 5  
 
 KakaoCert
 1. 본인인증 API
