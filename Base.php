@@ -18,15 +18,13 @@
  * ======================================================================================
  */
 
- require_once 'Linkhub/linkhub.auth.php';
+require_once 'Linkhub/linkhub.auth.php';
 
 class BaseService
 {
 
   const ServiceID = 'BAROCERT';
-  // const ServiceURL = 'https://barocert.linkhub.co.kr';
-  // const ServiceURL_Static = 'https://static-barocert.linkhub.co.kr';
-  const ServiceURL = 'https://bc-api.linkhub.kr';
+  const ServiceURL = 'https://barocert.linkhub.co.kr';
   const ServiceURL_Static = 'https://static-barocert.linkhub.co.kr';
   const Version = '2.0';
 

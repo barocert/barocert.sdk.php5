@@ -20,38 +20,33 @@
  * ======================================================================================
  */
 
- require_once 'Base.php';
+require_once 'Base.php';
 
 class PasscertService
 {
   private $BaseService;
 
-  // 상품 번호 추가 
   public function __construct($LinkID, $SecretKey)
   {
     $scope = array('441', '442', '443', '444');
     $this->BaseService = new BaseService($LinkID, $SecretKey, $scope);
   }
 
-  // 인증토큰 발급IP 옵션 setter
   public function IPRestrictOnOff($V)
   {
     $this->BaseService->IPRestrictOnOff($V);
   }
 
-  // 고정IP 사용 옵션 setter
   public function UseStaticIP($V)
   {
     $this->BaseService->UseStaticIP($V);
   }
 
-  // 로컬시스템 시간 사용여부 옵션 setter
   public function UseLocalTimeYN($V)
   {
     $this->BaseService->UseLocalTimeYN($V);
   }
 
-  // 서비스 URL setter
   public function ServiceURL($V)
   {
     $this->BaseService->ServiceURL($V);

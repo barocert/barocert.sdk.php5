@@ -20,12 +20,12 @@
  * ======================================================================================
  */
 
- require_once 'Base.php';
+require_once 'Base.php';
 
 class KakaocertService
 {
   private $BaseService;
- 
+
   public function __construct($LinkID, $SecretKey)
   {
     $scope = array('401', '402', '403', '404', '405');
@@ -60,7 +60,7 @@ class KakaocertService
     return $this->BaseService->encrypt($data, $algorithm);
   }
 
- /**
+  /**
    * 본인인증 요청
    */
   public function requestIdentity($ClientCode, $KakaoIdentity)
