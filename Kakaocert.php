@@ -10,16 +10,10 @@
  * be installed and enabled.
  *
  * https://www.linkhub.co.kr
-<<<<<<< HEAD
  * Author : lsh dev (dev@linkhubcorp.com)
  * Contributor : jws (dev@linkhubcorp.com)
  * Written : 2023-03-13
  * Updated : 2023-07-26
-=======
- * Author : linkhub dev (dev@linkhubcorp.com)
- * Written : 2023-03-13
- * Updated : 2023-06-13
->>>>>>> 9e2604f9e2d81479771c3bd5fcf4f6c282e96840
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
