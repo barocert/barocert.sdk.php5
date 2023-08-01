@@ -10,8 +10,8 @@
  * be installed and enabled.
  *
  * https://www.linkhub.co.kr
- * Author : lsh dev (dev@linkhubcorp.com)
- * Contributor : jws (dev@linkhubcorp.com)
+ * Author : lsh dev (code@linkhubcorp.com)
+ * Contributor : jws (code@linkhubcorp.com)
  * Written : 2023-03-13
  * Updated : 2023-07-26
  *
@@ -22,42 +22,16 @@
 
 require_once 'Base.php';
 
-class KakaocertService
+class KakaocertService extends BaseService
 {
-  private $BaseService;
-
   public function __construct($LinkID, $SecretKey)
   {
     $scope = array('401', '402', '403', '404', '405');
-    $this->BaseService = new BaseService($LinkID, $SecretKey, $scope);
-  }
-
-  public function IPRestrictOnOff($V)
-  {
-    $this->BaseService->IPRestrictOnOff($V);
-  }
-
-  public function UseStaticIP($V)
-  {
-    $this->BaseService->UseStaticIP($V);
-  }
-
-  public function UseLocalTimeYN($V)
-  {
-    $this->BaseService->UseLocalTimeYN($V);
-  }
-
-  public function ServiceURL($V)
-  {
-    $this->BaseService->ServiceURL($V);
+    parent::__construct($LinkID, $SecretKey, $scope);
   }
 
   public function encrypt($data) {
-    return $this->enc($data, 'AES');
-  }
-
-  public function enc($data, $algorithm) { 
-    return $this->BaseService->encrypt($data, $algorithm);
+    return parent::encrypt($data, 'AES');
   }
 
   /**
@@ -98,7 +72,7 @@ class KakaocertService
 
     $postdata = json_encode($KakaoIdentity);
     
-    $result = $this->BaseService->executeCURL('/KAKAO/Identity/' . $ClientCode, true, $postdata);
+    $result = parent::executeCURL('/KAKAO/Identity/' . $ClientCode, true, $postdata);
 
     $KakaoIdentityReceipt = new KakaoIdentityReceipt();
     $KakaoIdentityReceipt->fromJsonInfo($result);
@@ -129,7 +103,7 @@ class KakaocertService
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
-    $result = $this->BaseService->executeCURL('/KAKAO/Identity/' . $ClientCode .'/'. $ReceiptID, false, null);
+    $result = parent::executeCURL('/KAKAO/Identity/' . $ClientCode .'/'. $ReceiptID, false, null);
 
     $KakaoIdentityStatus = new KakaoIdentityStatus();
     $KakaoIdentityStatus->fromJsonInfo($result);
@@ -160,7 +134,7 @@ class KakaocertService
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
-    $result = $this->BaseService->executeCURL('/KAKAO/Identity/' . $ClientCode .'/'. $ReceiptID, true, null);
+    $result = parent::executeCURL('/KAKAO/Identity/' . $ClientCode .'/'. $ReceiptID, true, null);
 
     $KakaoIdentityResult = new KakaoIdentityResult();
     $KakaoIdentityResult->fromJsonInfo($result);
@@ -208,7 +182,7 @@ class KakaocertService
 
     $postdata = json_encode($KakaoSign);
 
-    $result = $this->BaseService->executeCURL('/KAKAO/Sign/' . $ClientCode, true,  $postdata);
+    $result = parent::executeCURL('/KAKAO/Sign/' . $ClientCode, true,  $postdata);
 
     $KakaoSignReceipt = new KakaoSignReceipt();
     $KakaoSignReceipt->fromJsonInfo($result);
@@ -240,7 +214,7 @@ class KakaocertService
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
-    $result = $this->BaseService->executeCURL('/KAKAO/Sign/'. $ClientCode .'/'. $ReceiptID, false, null);
+    $result = parent::executeCURL('/KAKAO/Sign/'. $ClientCode .'/'. $ReceiptID, false, null);
 
     $KakaoSignStatus = new KakaoSignStatus();
     $KakaoSignStatus->fromJsonInfo($result);
@@ -271,7 +245,7 @@ class KakaocertService
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
     
-    $result = $this->BaseService->executeCURL('/KAKAO/Sign/'. $ClientCode .'/'. $ReceiptID, true, null);
+    $result = parent::executeCURL('/KAKAO/Sign/'. $ClientCode .'/'. $ReceiptID, true, null);
 
     $KakaoSignResult = new KakaoSignResult();
     $KakaoSignResult->fromJsonInfo($result);
@@ -322,7 +296,7 @@ class KakaocertService
 
 
     $postdata = json_encode($KakaoMultiSign);
-    $result = $this->BaseService->executeCURL('/KAKAO/MultiSign/' . $ClientCode, true, $postdata);
+    $result = parent::executeCURL('/KAKAO/MultiSign/' . $ClientCode, true, $postdata);
 
     $KakaoMultiSignReceipt = new KakaoMultiSignReceipt();
     $KakaoMultiSignReceipt->fromJsonInfo($result);
@@ -353,7 +327,7 @@ class KakaocertService
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
-    $result = $this->BaseService->executeCURL('/KAKAO/MultiSign/' . $ClientCode .'/'. $ReceiptID, false , null);
+    $result = parent::executeCURL('/KAKAO/MultiSign/' . $ClientCode .'/'. $ReceiptID, false , null);
 
     $KakaoMultiSignStatus = new KakaoMultiSignStatus();
     $KakaoMultiSignStatus->fromJsonInfo($result);
@@ -384,7 +358,7 @@ class KakaocertService
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
     
-    $result = $this->BaseService->executeCURL('/KAKAO/MultiSign/'. $ClientCode .'/'. $ReceiptID, true, null);
+    $result = parent::executeCURL('/KAKAO/MultiSign/'. $ClientCode .'/'. $ReceiptID, true, null);
 
     $KakaoMultiSignResult = new KakaoMultiSignResult();
     $KakaoMultiSignResult->fromJsonInfo($result);
@@ -444,7 +418,7 @@ class KakaocertService
 
     $postdata = json_encode($KakaoCMS);
     
-    $result = $this->BaseService->executeCURL('/KAKAO/CMS/' . $ClientCode, true, $postdata);
+    $result = parent::executeCURL('/KAKAO/CMS/' . $ClientCode, true, $postdata);
 
     $KakaoCMSReceipt = new KakaoCMSReceipt();
     $KakaoCMSReceipt->fromJsonInfo($result);
@@ -475,7 +449,7 @@ class KakaocertService
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
-    $result = $this->BaseService->executeCURL('/KAKAO/CMS/' . $ClientCode .'/'. $ReceiptID, false, null);
+    $result = parent::executeCURL('/KAKAO/CMS/' . $ClientCode .'/'. $ReceiptID, false, null);
 
     $KakaoCMSStatus = new KakaoCMSStatus();
     $KakaoCMSStatus->fromJsonInfo($result);
@@ -506,7 +480,7 @@ class KakaocertService
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
-    $result = $this->BaseService->executeCURL('/KAKAO/CMS/'. $ClientCode .'/'. $ReceiptID, true, null);
+    $result = parent::executeCURL('/KAKAO/CMS/'. $ClientCode .'/'. $ReceiptID, true, null);
 
     $KakaoCMSResult = new KakaoCMSResult();
     $KakaoCMSResult->fromJsonInfo($result);
@@ -531,7 +505,7 @@ class KakaocertService
       throw new BarocertException('트랜잭션 아이디가 입력되지 않았습니다.');
     }
 
-    $result = $this->BaseService->executeCURL('/KAKAO/Login/' . $ClientCode .'/'. $TxID, true, null);
+    $result = parent::executeCURL('/KAKAO/Login/' . $ClientCode .'/'. $TxID, true, null);
 
     $KakaoLoginResult = new KakaoLoginResult();
     $KakaoLoginResult->fromJsonInfo($result);
@@ -564,20 +538,20 @@ class KakaocertService
 
 class KakaoIdentity
 {
-	public $receiverHP;
-	public $receiverName;
-	public $receiverBirthday;
-	public $reqTitle;
-	public $expireIn;
-	public $token;
-	public $returnURL;
-	public $appUseYN;
+  public $receiverHP;
+  public $receiverName;
+  public $receiverBirthday;
+  public $reqTitle;
+  public $expireIn;
+  public $token;
+  public $returnURL;
+  public $appUseYN;
 }
 
 class KakaoIdentityReceipt
 {
   public $receiptID;
-	public $scheme;
+  public $scheme;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -715,9 +689,9 @@ class KakaoSignStatus
 class KakaoSignResult
 {
   public $receiptID;
-	public $state;
-	public $signedData;
-	public $ci;
+  public $state;
+  public $signedData;
+  public $ci;
 
   public function fromJsonInfo($jsonInfo)
   {

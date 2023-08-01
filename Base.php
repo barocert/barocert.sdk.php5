@@ -10,7 +10,7 @@
  * be installed and enabled.
  *
  * https://www.linkhub.co.kr
- * Contributor : jws (dev@linkhubcorp.com)
+ * Contributor : jws (code@linkhubcorp.com)
  * Written : 2023-07-26
  *
  * Thanks for your interest.
@@ -22,7 +22,6 @@ require_once 'Linkhub/linkhub.auth.php';
 
 class BaseService
 {
-
   const ServiceID = 'BAROCERT';
   const ServiceURL = 'https://barocert.linkhub.co.kr';
   const ServiceURL_Static = 'https://static-barocert.linkhub.co.kr';

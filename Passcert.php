@@ -10,8 +10,8 @@
  * be installed and enabled.
  *
  * https://www.linkhub.co.kr
- * Author : lsh (dev@linkhubcorp.com)
- * Contributor : jws (dev@linkhubcorp.com)
+ * Author : lsh (code@linkhubcorp.com)
+ * Contributor : jws (code@linkhubcorp.com)
  * Written : 2023-03-13
  * Updated : 2023-07-26
  *
@@ -22,42 +22,16 @@
 
 require_once 'Base.php';
 
-class PasscertService
+class PasscertService extends BaseService
 {
-  private $BaseService;
-
   public function __construct($LinkID, $SecretKey)
   {
     $scope = array('441', '442', '443', '444');
-    $this->BaseService = new BaseService($LinkID, $SecretKey, $scope);
-  }
-
-  public function IPRestrictOnOff($V)
-  {
-    $this->BaseService->IPRestrictOnOff($V);
-  }
-
-  public function UseStaticIP($V)
-  {
-    $this->BaseService->UseStaticIP($V);
-  }
-
-  public function UseLocalTimeYN($V)
-  {
-    $this->BaseService->UseLocalTimeYN($V);
-  }
-
-  public function ServiceURL($V)
-  {
-    $this->BaseService->ServiceURL($V);
+    parent::__construct($LinkID, $SecretKey, $scope);
   }
 
   public function encrypt($data) {
-    return $this->enc($data, 'AES');
-  }
-
-  public function enc($data, $algorithm) { 
-    return $this->BaseService->encrypt($data, $algorithm);
+    return parent::encrypt($data, 'AES');
   }
 
   /**
@@ -98,7 +72,7 @@ class PasscertService
 
     $postdata = json_encode($PassIdentity);
     
-    $result = $this->BaseService->executeCURL('/PASS/Identity/' . $ClientCode, true, $postdata);
+    $result = parent::executeCURL('/PASS/Identity/' . $ClientCode, true, $postdata);
 
     $PassIdentityReceipt = new PassIdentityReceipt();
     $PassIdentityReceipt->fromJsonInfo($result);
@@ -129,7 +103,7 @@ class PasscertService
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
-    $result = $this->BaseService->executeCURL('/PASS/Identity/' . $ClientCode .'/'. $ReceiptID, false, null);
+    $result = parent::executeCURL('/PASS/Identity/' . $ClientCode .'/'. $ReceiptID, false, null);
 
     $PassIdentityStatus = new PassIdentityStatus();
     $PassIdentityStatus->fromJsonInfo($result);
@@ -171,7 +145,7 @@ class PasscertService
 
     $postdata = json_encode($PassIdentityVerify);
 
-    $result = $this->BaseService->executeCURL('/PASS/Identity/' . $ClientCode .'/'. $ReceiptID, true, $postdata);
+    $result = parent::executeCURL('/PASS/Identity/' . $ClientCode .'/'. $ReceiptID, true, $postdata);
 
     $PassIdentityResult = new PassIdentityResult();
     $PassIdentityResult->fromJsonInfo($result);
@@ -219,7 +193,7 @@ class PasscertService
 
     $postdata = json_encode($PassSign);
 
-    $result = $this->BaseService->executeCURL('/PASS/Sign/' . $ClientCode, true,  $postdata);
+    $result = parent::executeCURL('/PASS/Sign/' . $ClientCode, true,  $postdata);
     $PassSignReceipt = new PassSignReceipt();
     $PassSignReceipt->fromJsonInfo($result);
     return $PassSignReceipt;
@@ -250,7 +224,7 @@ class PasscertService
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
-    $result = $this->BaseService->executeCURL('/PASS/Sign/'. $ClientCode .'/'. $ReceiptID, false, null);
+    $result = parent::executeCURL('/PASS/Sign/'. $ClientCode .'/'. $ReceiptID, false, null);
 
     $PassSignStatus = new PassSignStatus();
     $PassSignStatus->fromJsonInfo($result);
@@ -292,7 +266,7 @@ class PasscertService
     
     $postdata = json_encode($PassSignVerify);
 
-    $result = $this->BaseService->executeCURL('/PASS/Sign/'. $ClientCode .'/'. $ReceiptID, true, $postdata);
+    $result = parent::executeCURL('/PASS/Sign/'. $ClientCode .'/'. $ReceiptID, true, $postdata);
 
     $PassSignResult = new PassSignResult();
     $PassSignResult->fromJsonInfo($result);
@@ -346,7 +320,7 @@ class PasscertService
 
     $postdata = json_encode($PassCMS);
     
-    $result = $this->BaseService->executeCURL('/PASS/CMS/' . $ClientCode, true, $postdata);
+    $result = parent::executeCURL('/PASS/CMS/' . $ClientCode, true, $postdata);
 
     $PassCMSReceipt = new PassCMSReceipt();
     $PassCMSReceipt->fromJsonInfo($result);
@@ -377,7 +351,7 @@ class PasscertService
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
-    $result = $this->BaseService->executeCURL('/PASS/CMS/' . $ClientCode .'/'. $ReceiptID, false, null);
+    $result = parent::executeCURL('/PASS/CMS/' . $ClientCode .'/'. $ReceiptID, false, null);
 
     $PassCMSStatus = new PassCMSStatus();
     $PassCMSStatus->fromJsonInfo($result);
@@ -419,7 +393,7 @@ class PasscertService
 
     $postdata = json_encode($PassCMSVerify);
 
-    $result = $this->BaseService->executeCURL('/PASS/CMS/'. $ClientCode .'/'. $ReceiptID, true, $postdata);
+    $result = parent::executeCURL('/PASS/CMS/'. $ClientCode .'/'. $ReceiptID, true, $postdata);
 
     $PassCMSResult = new PassCMSResult();
     $PassCMSResult->fromJsonInfo($result);
@@ -464,7 +438,7 @@ class PasscertService
 
     $postdata = json_encode($PassLogin);
     
-    $result = $this->BaseService->executeCURL('/PASS/Login/' . $ClientCode, true, $postdata);
+    $result = parent::executeCURL('/PASS/Login/' . $ClientCode, true, $postdata);
 
     $PassLoginReceipt = new PassLoginReceipt();
     $PassLoginReceipt->fromJsonInfo($result);
@@ -495,7 +469,7 @@ class PasscertService
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
-    $result = $this->BaseService->executeCURL('/PASS/Login/' . $ClientCode .'/'. $ReceiptID, false, null);
+    $result = parent::executeCURL('/PASS/Login/' . $ClientCode .'/'. $ReceiptID, false, null);
 
     $PassLoginStatus = new PassLoginStatus();
     $PassLoginStatus->fromJsonInfo($result);
@@ -537,7 +511,7 @@ class PasscertService
 
     $postdata = json_encode($PassLoginVerify);
 
-    $result = $this->BaseService->executeCURL('/PASS/Login/' . $ClientCode .'/'. $ReceiptID, true, $postdata);
+    $result = parent::executeCURL('/PASS/Login/' . $ClientCode .'/'. $ReceiptID, true, $postdata);
 
     $PassLoginResult = new PassLoginResult();
     $PassLoginResult->fromJsonInfo($result);
@@ -548,27 +522,27 @@ class PasscertService
 
 class PassIdentity
 {
-	public $receiverHP;
-	public $receiverName;
-	public $receiverBirthday;
-	public $reqTitle;
-	public $reqMessage;
+  public $receiverHP;
+  public $receiverName;
+  public $receiverBirthday;
+  public $reqTitle;
+  public $reqMessage;
   public $callCenterNum;
-	public $expireIn;
-	public $token;
-	public $userAgreementYN;
-	public $receiverInfoYN;
-	public $telcoType;
-	public $deviceOSType;
-	public $appUseYN;
-	public $useTssYN;
+  public $expireIn;
+  public $token;
+  public $userAgreementYN;
+  public $receiverInfoYN;
+  public $telcoType;
+  public $deviceOSType;
+  public $appUseYN;
+  public $useTssYN;
 }
 
 class PassIdentityReceipt
 {
   public $receiptId;
-	public $scheme;
-	public $marketUrl;
+  public $scheme;
+  public $marketUrl;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -751,7 +725,7 @@ class PassSignStatus
 class PassSignVerify
 {
   public $receiverHP;
-	public $receiverName;
+  public $receiverName;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -763,14 +737,14 @@ class PassSignVerify
 class PassSignResult
 {
   public $receiptID;
-	public $state;
-	public $receiverHP;
-	public $receiverName;
-	public $receiverBirthday;
-	public $receiverGender;
-	public $receiverTelcoType;
-	public $signedData;
-	public $ci;
+  public $state;
+  public $receiverHP;
+  public $receiverName;
+  public $receiverBirthday;
+  public $receiverGender;
+  public $receiverTelcoType;
+  public $signedData;
+  public $ci;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -788,24 +762,24 @@ class PassSignResult
 
 class PassCMS
 {
-	public $receiverHP;
-	public $receiverName;
-	public $receiverBirthday;
-	public $reqTitle;
-	public $reqMessage;
-	public $callCenterNum;
-	public $expireIn;
-	public $userAgreementYN;	
-	public $receiverInfoYN;	
-	public $bankName;	
-	public $bankAccountNum;
-	public $bankAccountName;
-	public $bankWithdraw;
-	public $bankServiceType;
-	public $telcoType;
-	public $deviceOSType;
+  public $receiverHP;
+  public $receiverName;
+  public $receiverBirthday;
+  public $reqTitle;
+  public $reqMessage;
+  public $callCenterNum;
+  public $expireIn;
+  public $userAgreementYN;	
+  public $receiverInfoYN;	
+  public $bankName;	
+  public $bankAccountNum;
+  public $bankAccountName;
+  public $bankWithdraw;
+  public $bankServiceType;
+  public $telcoType;
+  public $deviceOSType;
   public $appUseYN;
-	public $useTssYN;
+  public $useTssYN;
 }
 
 class PassCMSReceipt
@@ -871,7 +845,7 @@ class PassCMSStatus
 class PassCMSVerify
 {
   public $receiverHP;
-	public $receiverName;
+  public $receiverName;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -883,14 +857,14 @@ class PassCMSVerify
 class PassCMSResult
 {
   public $receiptID;
-	public $state;
-	public $receiverHP;
-	public $receiverName;
-	public $receiverBirthday;
-	public $receiverGender;
-	public $receiverTelcoType;
-	public $signedData;
-	public $ci;
+  public $state;
+  public $receiverHP;
+  public $receiverName;
+  public $receiverBirthday;
+  public $receiverGender;
+  public $receiverTelcoType;
+  public $signedData;
+  public $ci;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -908,27 +882,27 @@ class PassCMSResult
 
 class PassLogin
 {
-	public $receiverHP;
-	public $receiverName;
-	public $receiverBirthday;
-	public $reqTitle;
-	public $reqMessage;
+  public $receiverHP;
+  public $receiverName;
+  public $receiverBirthday;
+  public $reqTitle;
+  public $reqMessage;
   public $callCenterNum;
-	public $expireIn;
-	public $token;
-	public $userAgreementYN;
-	public $receiverInfoYN;
-	public $telcoType;
-	public $deviceOSType;
-	public $appUseYN;
-	public $useTssYN;
+  public $expireIn;
+  public $token;
+  public $userAgreementYN;
+  public $receiverInfoYN;
+  public $telcoType;
+  public $deviceOSType;
+  public $appUseYN;
+  public $useTssYN;
 }
 
 class PassLoginReceipt
 {
   public $receiptId;
-	public $scheme;
-	public $marketUrl;
+  public $scheme;
+  public $marketUrl;
 
   public function fromJsonInfo($jsonInfo)
   {
