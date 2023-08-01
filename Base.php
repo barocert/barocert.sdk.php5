@@ -26,7 +26,7 @@ class BaseService
   const ServiceID = 'BAROCERT';
   const ServiceURL = 'https://barocert.linkhub.co.kr';
   const ServiceURL_Static = 'https://static-barocert.linkhub.co.kr';
-  const Version = '2.0';
+  const Version = '2.1';
 
   private $ServiceURL;
   
@@ -180,11 +180,11 @@ class BaseService
       $xDate = $this->Linkhub->getTime($this->UseStaticIP, false, false);
 
       $digestTarget = 'POST' . chr(10);      
-      $digestTarget = $digestTarget . $uri . chr(10);
       if($postdata){
         $digestTarget = $digestTarget . base64_encode(hash('sha256', $postdata, true)) . chr(10);
       }
       $digestTarget = $digestTarget . $xDate . chr(10);
+      $digestTarget = $digestTarget . $uri . chr(10);
 
       $digest = base64_encode(hash_hmac('sha256', $digestTarget, base64_decode(strtr($this->Linkhub->getSecretKey(), '-_', '+/')), true));
 
@@ -253,7 +253,6 @@ class BaseService
     return base64_encode($biv . $enc);
   }
 }
-
 
 class BarocertException extends Exception
 {
