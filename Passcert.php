@@ -163,7 +163,7 @@ class PasscertService
       throw new BarocertException('본인인증 검증 요청 정보가 입력되지 않았습니다.');
     }
     if (is_null($PassIdentityVerify->receiverHP) || empty($PassIdentityVerify->receiverHP)) {
-      throw new BarocertException('수신자 휴대폰 번호가 입력되지 않았습니다.');
+      throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
     }
     if (is_null($PassIdentityVerify->receiverName) || empty($PassIdentityVerify->receiverName)) {
       throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
@@ -284,7 +284,7 @@ class PasscertService
       throw new BarocertException('전자서명 검증 요청 정보가 입력되지 않았습니다.');
     }
     if (is_null($PassSignVerify->receiverHP) || empty($PassSignVerify->receiverHP)) {
-      throw new BarocertException('수신자 휴대폰 번호가 입력되지 않았습니다.');
+      throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
     }
     if (is_null($PassSignVerify->receiverName) || empty($PassSignVerify->receiverName)) {
       throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
@@ -411,7 +411,7 @@ class PasscertService
       throw new BarocertException('출금동의 검증 요청 정보가 입력되지 않았습니다.');
     }
     if (is_null($PassCMSVerify->receiverHP) || empty($PassCMSVerify->receiverHP)) {
-      throw new BarocertException('수신자 휴대폰 번호가 입력되지 않았습니다.');
+      throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
     }
     if (is_null($PassCMSVerify->receiverName) || empty($PassCMSVerify->receiverName)) {
       throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
@@ -529,7 +529,7 @@ class PasscertService
       throw new BarocertException('간편로그인 검증 요청 정보가 입력되지 않았습니다.');
     }
     if (is_null($PassLoginVerify->receiverHP) || empty($PassLoginVerify->receiverHP)) {
-      throw new BarocertException('수신자 휴대폰 번호가 입력되지 않았습니다.');
+      throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
     }
     if (is_null($PassLoginVerify->receiverName) || empty($PassLoginVerify->receiverName)) {
       throw new BarocertException('수신자 성명이 입력되지 않았습니다.');

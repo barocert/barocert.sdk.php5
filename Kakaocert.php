@@ -86,7 +86,6 @@ class KakaocertService
     if (is_null($KakaoIdentity->receiverBirthday) || empty($KakaoIdentity->receiverBirthday)) {
       throw new BarocertException('생년월일이 입력되지 않았습니다.');
     }
-
     if (is_null($KakaoIdentity->expireIn) || empty($KakaoIdentity->expireIn)) {
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
     }
@@ -805,9 +804,9 @@ class KakaoMultiSignStatus
 class KakaoMultiSignResult
 {
   public $receiptID;
-	public $state;
-	public $multiSignedData;
-	public $ci;
+  public $state;
+  public $multiSignedData;
+  public $ci;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -821,22 +820,21 @@ class KakaoMultiSignResult
 
 class KakaoCMS
 {
-	public $requestID;
-	public $receiverHP;
-	public $receiverName;
-	public $receiverBirthday;
-	public $reqTitle;
-	public $expireIn;
-	public $returnURL;	
-	public $requestCorp;
-	public $bankName;
-	public $bankAccountNum;
-	public $bankAccountName;
-	public $bankAccountBirthday;
-	public $bankServiceType;
-	public $appUseYN;
+  public $requestID;
+  public $receiverHP;
+  public $receiverName;
+  public $receiverBirthday;
+  public $reqTitle;
+  public $expireIn;
+  public $returnURL;	
+  public $requestCorp;
+  public $bankName;
+  public $bankAccountNum;
+  public $bankAccountName;
+  public $bankAccountBirthday;
+  public $bankServiceType;
+  public $appUseYN;
 }
-
 
 class KakaoCMSReceipt
 {
@@ -895,9 +893,9 @@ class KakaoCMSStatus
 class KakaoCMSResult
 {
   public $receiptID;
-	public $state;
-	public $signedData;
-	public $ci;
+  public $state;
+  public $signedData;
+  public $ci;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -911,9 +909,9 @@ class KakaoCMSResult
 class KakaoLoginResult
 {
   public $txID;
-	public $state;
-	public $signedData;
-	public $ci;
+  public $state;
+  public $signedData;
+  public $ci;
 
   public function fromJsonInfo($jsonInfo)
   {
