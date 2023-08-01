@@ -2,7 +2,7 @@
 
 /**
  * =====================================================================================
- * Class for base module for baroert API SDK. It include base functionality for
+ * Class for base module for passcert API SDK. It include base functionality for
  * RESTful web service request and parse json result. It uses Linkhub module
  * to accomplish authentication APIs.
  *
