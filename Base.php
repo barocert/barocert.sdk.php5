@@ -236,8 +236,9 @@ class BaseService
     if($algorithm === "AES") {
       return $this->encAES256CBC($data);
     }
-    else
+    else {
       throw new BarocertException('지원하지 않는 암호화 알고리즘입니다.');
+    }
   }
 
   function pkcs7padding($data){
@@ -250,6 +251,25 @@ class BaseService
     $biv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC), MCRYPT_RAND);
     $enc = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, base64_decode($this->Linkhub->getSecretKey()), $this->pkcs7padding($data), MCRYPT_MODE_CBC, $biv);
     return base64_encode($biv . $enc);
+  }
+}
+
+
+class BarocertException extends Exception
+{
+  public function __construct($response, $code = -99999999, Exception $previous = null)
+  {
+    $Err = json_decode($response);
+    if (is_null($Err)) {
+      parent::__construct($response, $code);
+    } else {
+      parent::__construct($Err->message, $Err->code);
+    }
+  }
+
+  public function __toString()
+  {
+    return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
   }
 }
 

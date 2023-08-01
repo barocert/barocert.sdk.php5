@@ -1020,22 +1020,4 @@ class PassLoginResult
   }
 }
 
-class BarocertException extends Exception
-{
-  public function __construct($response, $code = -99999999, Exception $previous = null)
-  {
-    $Err = json_decode($response);
-    if (is_null($Err)) {
-      parent::__construct($response, $code);
-    } else {
-      parent::__construct($Err->message, $Err->code);
-    }
-  }
-
-  public function __toString()
-  {
-    return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
-  }
-}
-
 ?>
