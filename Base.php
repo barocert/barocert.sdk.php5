@@ -27,13 +27,12 @@ class BaseService
   const ServiceURL_Static = 'https://static-barocert.linkhub.co.kr';
   const Version = '2.1';
 
-  private $Service_URL;
-  
   private $Token_Table = array();
   private $Linkhub;
   private $IPRestrictOnOff = true;
   private $UseStaticIP = false;
   private $UseLocalTimeYN = true;
+  private $__ServiceURL;
 
   private $scopes = array();
   private $__requestMode = LINKHUB_COMM_MODE;
@@ -68,7 +67,7 @@ class BaseService
 
   public function ServiceURL($V)
   {
-    $this->Service_URL = $V;
+    $this->__ServiceURL = $V;
   }
 
   public function AuthURL($V)
@@ -78,8 +77,8 @@ class BaseService
 
   private function getTargetURL()
   {
-    if(isset($this->Service_URL)) {
-      return $this->Service_URL;
+    if(isset($this->__ServiceURL)) {
+      return $this->__ServiceURL;
     }
 
     if ($this->UseStaticIP) {
