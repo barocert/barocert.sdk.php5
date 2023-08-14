@@ -615,7 +615,8 @@ class PassIdentityResult
   public $receiptID;
   public $state;
   public $receiverName;
-  public $receiverBirthday;
+  public $receiverYear;
+  public $receiverDay;
   public $receiverGender;
   public $receiverTelcoType;
   public $signedData;
@@ -626,7 +627,8 @@ class PassIdentityResult
     isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->receiverName) ? $this->receiverName = $jsonInfo->receiverName : null;
-    isset($jsonInfo->receiverBirthday) ? $this->receiverBirthday = $jsonInfo->receiverBirthday : null;
+    isset($jsonInfo->receiverYear) ? $this->receiverYear = $jsonInfo->receiverYear : null;
+    isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
     isset($jsonInfo->receiverGender) ? $this->receiverGender = $jsonInfo->receiverGender : null;
     isset($jsonInfo->receiverTelcoType) ? $this->receiverTelcoType = $jsonInfo->receiverTelcoType : null;
     isset($jsonInfo->signedData) ? $this->signedData = $jsonInfo->signedData : null;
@@ -740,7 +742,8 @@ class PassSignResult
   public $state;
   public $receiverHP;
   public $receiverName;
-  public $receiverBirthday;
+  public $receiverYear;
+  public $receiverDay;
   public $receiverGender;
   public $receiverTelcoType;
   public $signedData;
@@ -752,7 +755,8 @@ class PassSignResult
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->receiverHP) ? $this->receiverHP = $jsonInfo->receiverHP : null;
     isset($jsonInfo->receiverName) ? $this->receiverName = $jsonInfo->receiverName : null;
-    isset($jsonInfo->receiverBirthday) ? $this->receiverBirthday = $jsonInfo->receiverBirthday : null;
+    isset($jsonInfo->receiverYear) ? $this->receiverYear = $jsonInfo->receiverYear : null;
+    isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
     isset($jsonInfo->receiverGender) ? $this->receiverGender = $jsonInfo->receiverGender : null;
     isset($jsonInfo->receiverTelcoType) ? $this->receiverTelcoType = $jsonInfo->receiverTelcoType : null;
     isset($jsonInfo->signedData) ? $this->signedData = $jsonInfo->signedData : null;
@@ -860,7 +864,8 @@ class PassCMSResult
   public $state;
   public $receiverHP;
   public $receiverName;
-  public $receiverBirthday;
+  public $receiverYear;
+  public $receiverDay;
   public $receiverGender;
   public $receiverTelcoType;
   public $signedData;
@@ -872,7 +877,8 @@ class PassCMSResult
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->receiverHP) ? $this->receiverHP = $jsonInfo->receiverHP : null;
     isset($jsonInfo->receiverName) ? $this->receiverName = $jsonInfo->receiverName : null;
-    isset($jsonInfo->receiverBirthday) ? $this->receiverBirthday = $jsonInfo->receiverBirthday : null;
+    isset($jsonInfo->receiverYear) ? $this->receiverYear = $jsonInfo->receiverYear : null;
+    isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
     isset($jsonInfo->receiverGender) ? $this->receiverGender = $jsonInfo->receiverGender : null;
     isset($jsonInfo->receiverTelcoType) ? $this->receiverTelcoType = $jsonInfo->receiverTelcoType : null;
     isset($jsonInfo->signedData) ? $this->signedData = $jsonInfo->signedData : null;
@@ -975,7 +981,8 @@ class PassLoginResult
   public $receiptID;
   public $state;
   public $receiverName;
-  public $receiverBirthday;
+  public $receiverYear;
+  public $receiverDay;
   public $receiverGender;
   public $receiverTelcoType;
   public $signedData;
@@ -986,7 +993,8 @@ class PassLoginResult
     isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->receiverName) ? $this->receiverName = $jsonInfo->receiverName : null;
-    isset($jsonInfo->receiverBirthday) ? $this->receiverBirthday = $jsonInfo->receiverBirthday : null;
+    isset($jsonInfo->receiverYear) ? $this->receiverYear = $jsonInfo->receiverYear : null;
+    isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
     isset($jsonInfo->receiverGender) ? $this->receiverGender = $jsonInfo->receiverGender : null;
     isset($jsonInfo->receiverTelcoType) ? $this->receiverTelcoType = $jsonInfo->receiverTelcoType : null;
     isset($jsonInfo->signedData) ? $this->signedData = $jsonInfo->signedData : null;
