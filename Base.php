@@ -25,7 +25,7 @@ class BaseService
   const ServiceID = 'BAROCERT';
   const ServiceURL = 'https://barocert.linkhub.co.kr';
   const ServiceURL_Static = 'https://static-barocert.linkhub.co.kr';
-  const Version = '2.1';
+  const APIVERSION = '2.1';
 
   private $Token_Table = array();
   private $Linkhub;
@@ -145,7 +145,7 @@ class BaseService
         $digest = base64_encode(hash_hmac('sha256', $digestTarget, base64_decode(strtr($this->Linkhub->getSecretKey(), '-_', '+/')), true));
 
         $header[] = 'x-bc-date: ' . $xDate;
-        $header[] = 'x-bc-version: ' . BaseService::Version;
+        $header[] = 'x-bc-version: ' . BaseService::APIVERSION;
         $header[] = 'x-bc-auth: ' .  $digest;
         $header[] = 'x-bc-encryptionmode: ' . 'CBC';
       }
@@ -192,7 +192,7 @@ class BaseService
       $digest = base64_encode(hash_hmac('sha256', $digestTarget, base64_decode(strtr($this->Linkhub->getSecretKey(), '-_', '+/')), true));
 
       $header[] = 'x-bc-date: ' . $xDate;
-      $header[] = 'x-bc-version: ' . BaseService::Version;
+      $header[] = 'x-bc-version: ' . BaseService::APIVERSION;
       $header[] = 'x-bc-auth: ' . $digest;
       $header[] = 'x-bc-encryptionmode: ' . 'CBC';
 
