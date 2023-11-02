@@ -28,7 +28,7 @@ class BaseService
   const ServiceURL_Static = 'https://static-barocert.linkhub.co.kr';
   const APIVERSION = '2.1';
 
-  private $EncryptMode;
+  private $EncryptMode='CBC';
   private $Token_Table = array();
   private $Linkhub;
   private $IPRestrictOnOff = true;
