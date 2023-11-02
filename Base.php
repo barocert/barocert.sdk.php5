@@ -27,6 +27,7 @@ class BaseService
   const ServiceURL_Static = 'https://static-barocert.linkhub.co.kr';
   const APIVERSION = '2.1';
 
+  private $EncryptMode = 'CBC';
   private $Token_Table = array();
   private $Linkhub;
   private $IPRestrictOnOff = true;
@@ -147,7 +148,7 @@ class BaseService
         $header[] = 'x-bc-date: ' . $xDate;
         $header[] = 'x-bc-version: ' . BaseService::APIVERSION;
         $header[] = 'x-bc-auth: ' .  $digest;
-        $header[] = 'x-bc-encryptionmode: ' . 'CBC';
+        $header[] = 'x-bc-encryptionmode: ' . $EncryptMode;
       }
 
       curl_setopt($http, CURLOPT_HTTPHEADER, $header);
@@ -194,7 +195,7 @@ class BaseService
       $header[] = 'x-bc-date: ' . $xDate;
       $header[] = 'x-bc-version: ' . BaseService::APIVERSION;
       $header[] = 'x-bc-auth: ' . $digest;
-      $header[] = 'x-bc-encryptionmode: ' . 'CBC';
+      $header[] = 'x-bc-encryptionmode: ' . $EncryptMode;
 
       $params = array(
         'http' => array(
@@ -236,11 +237,21 @@ class BaseService
   }
 
   public function encrypt($data, $algorithm){
-    if($algorithm === "AES") {
-      return $this->encAES256CBC($data);
+    if ((version_compare(PHP_VERSION, '7.0') >= 0)) {
+      if($algorithm === "AES") {
+        return $this->encAES256GCM($data);
+      }
+      else {
+        throw new BarocertException('지원하지 않는 암호화 알고리즘입니다.');
+      }
     }
     else {
-      throw new BarocertException('지원하지 않는 암호화 알고리즘입니다.');
+      if($algorithm === "AES") {
+        return $this->encAES256CBC($data);
+      }
+      else {
+        throw new BarocertException('지원하지 않는 암호화 알고리즘입니다.');
+      }
     }
   }
 
@@ -251,9 +262,23 @@ class BaseService
   }
 
   public function encAES256CBC($data){
+    $EncryptMode = 'CBC';
     $biv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC), MCRYPT_RAND);
     $enc = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, base64_decode($this->Linkhub->getSecretKey()), $this->pkcs7padding($data), MCRYPT_MODE_CBC, $biv);
     return base64_encode($biv . $enc);
+  }
+
+  public function encAES256GCM($data){
+    $EncryptMode = 'GCM';
+    if(mb_detect_encoding($data, 'EUC-KR,UTF-8') != "UTF-8") {
+      $data = iconv("EUC-KR", "UTF-8", $data);
+    }
+  
+    $biv  = openssl_random_pseudo_bytes(12);
+    $ciphertext = openssl_encrypt($data, "aes-256-gcm", base64_decode($this->Linkhub->getSecretKey()), 0, $biv, $tagbt);
+  
+    $concatted = $biv.base64_decode($ciphertext).$tagbt;
+    return base64_encode($concatted);
   }
 }
 
