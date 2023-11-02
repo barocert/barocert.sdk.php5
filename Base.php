@@ -44,6 +44,7 @@ class BaseService
     $this->scopes[] = 'partner';
     foreach($scope as $value) 
       $this->scopes[] = $value;
+    $this->EncryptMode = $this->EncryptModeSetup();
   }
 
   protected function AddScope($scope)
@@ -74,6 +75,14 @@ class BaseService
   public function AuthURL($V)
   {
     $this->Linkhub->ServiceURL($V);
+  }
+
+  public function EncryptModeSetup()
+  {
+    if ((version_compare(PHP_VERSION, '7.0') >= 0))
+      return 'GCM';
+    else
+      return 'CBC';
   }
 
   private function getTargetURL()
@@ -148,7 +157,7 @@ class BaseService
         $header[] = 'x-bc-date: ' . $xDate;
         $header[] = 'x-bc-version: ' . BaseService::APIVERSION;
         $header[] = 'x-bc-auth: ' .  $digest;
-        $header[] = 'x-bc-encryptionmode: ' . $EncryptMode;
+        $header[] = 'x-bc-encryptionmode: ' . $this->EncryptMode;
       }
 
       curl_setopt($http, CURLOPT_HTTPHEADER, $header);
@@ -195,7 +204,7 @@ class BaseService
       $header[] = 'x-bc-date: ' . $xDate;
       $header[] = 'x-bc-version: ' . BaseService::APIVERSION;
       $header[] = 'x-bc-auth: ' . $digest;
-      $header[] = 'x-bc-encryptionmode: ' . $EncryptMode;
+      $header[] = 'x-bc-encryptionmode: ' . $$this->EncryptMode;
 
       $params = array(
         'http' => array(
@@ -237,21 +246,16 @@ class BaseService
   }
 
   public function encrypt($data, $algorithm){
-    if ((version_compare(PHP_VERSION, '7.0') >= 0)) {
-      if($algorithm === "AES") {
+    if($algorithm === "AES") {
+      if ($this->EncryptMode === "GCM") {
         return $this->encAES256GCM($data);
       }
       else {
-        throw new BarocertException('지원하지 않는 암호화 알고리즘입니다.');
+        return $this->encAES256CBC($data);
       }
     }
     else {
-      if($algorithm === "AES") {
-        return $this->encAES256CBC($data);
-      }
-      else {
-        throw new BarocertException('지원하지 않는 암호화 알고리즘입니다.');
-      }
+      throw new BarocertException('지원하지 않는 암호화 알고리즘입니다.');
     }
   }
 
@@ -262,14 +266,12 @@ class BaseService
   }
 
   public function encAES256CBC($data){
-    $EncryptMode = 'CBC';
     $biv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC), MCRYPT_RAND);
     $enc = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, base64_decode($this->Linkhub->getSecretKey()), $this->pkcs7padding($data), MCRYPT_MODE_CBC, $biv);
     return base64_encode($biv . $enc);
   }
 
   public function encAES256GCM($data){
-    $EncryptMode = 'GCM';
     if(mb_detect_encoding($data, 'EUC-KR,UTF-8') != "UTF-8") {
       $data = iconv("EUC-KR", "UTF-8", $data);
     }
