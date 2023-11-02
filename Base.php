@@ -12,6 +12,7 @@
  * https://www.linkhub.co.kr
  * Contributor : jws (code@linkhubcorp.com)
  * Written : 2023-07-26
+ * Updated : 2023-11-02
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
@@ -27,7 +28,7 @@ class BaseService
   const ServiceURL_Static = 'https://static-barocert.linkhub.co.kr';
   const APIVERSION = '2.1';
 
-  private $EncryptMode = 'CBC';
+  private $EncryptMode;
   private $Token_Table = array();
   private $Linkhub;
   private $IPRestrictOnOff = true;
@@ -44,7 +45,7 @@ class BaseService
     $this->scopes[] = 'partner';
     foreach($scope as $value) 
       $this->scopes[] = $value;
-    $this->EncryptMode = $this->EncryptModeSetup();
+    $this->EncryptMode = $this->setupEncryptMode();
   }
 
   protected function AddScope($scope)
@@ -77,7 +78,7 @@ class BaseService
     $this->Linkhub->ServiceURL($V);
   }
 
-  public function EncryptModeSetup()
+  public function setupEncryptMode()
   {
     if ((version_compare(PHP_VERSION, '7.0') >= 0))
       return 'GCM';
