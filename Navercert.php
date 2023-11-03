@@ -163,6 +163,9 @@ class NavercertService extends BaseService
     if (is_null($NaverSign->receiverBirthday) || empty($NaverSign->receiverBirthday)) {
       throw new BarocertException('생년월일이 입력되지 않았습니다.');
     }
+    if (is_null($NaverSign->callCenterNum) || empty($NaverSign->callCenterNum)) {
+      throw new BarocertException('고객센터 연락처가 입력되지 않았습니다.');
+    }
     if (is_null($NaverSign->expireIn) || empty($NaverSign->expireIn)) {
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
     }
@@ -276,6 +279,9 @@ class NavercertService extends BaseService
     }
     if (is_null($NaverMultiSign->receiverBirthday) || empty($NaverMultiSign->receiverBirthday)) {
       throw new BarocertException('생년월일이 입력되지 않았습니다.');
+    }
+    if (is_null($NaverMultiSign->callCenterNum) || empty($NaverMultiSign->callCenterNum)) {
+      throw new BarocertException('고객센터 연락처가 입력되지 않았습니다.');
     }
     if (is_null($NaverMultiSign->expireIn) || empty($NaverMultiSign->expireIn)) {
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
