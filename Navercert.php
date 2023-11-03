@@ -59,6 +59,9 @@ class NavercertService extends BaseService
     if (is_null($NaverIdentity->receiverBirthday) || empty($NaverIdentity->receiverBirthday)) {
       throw new BarocertException('생년월일이 입력되지 않았습니다.');
     }
+    if (is_null($NaverIdentity->callCenterNum) || empty($NaverIdentity->callCenterNum)) {
+      throw new BarocertException('고객센터 연락처가 입력되지 않았습니다.');
+    }
     if (is_null($NaverIdentity->expireIn) || empty($NaverIdentity->expireIn)) {
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
     }
@@ -383,6 +386,7 @@ class NaverIdentity
   public $receiverHP;
   public $receiverName;
   public $receiverBirthday;
+  public $callCenterNum;
   public $expireIn;
   public $returnURL;
   public $deviceOSType;
