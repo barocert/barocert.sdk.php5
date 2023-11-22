@@ -12,7 +12,7 @@
  * https://www.linkhub.co.kr
  * Author : csh (code@linkhubcorp.com)
  * Written : 2023-09-01
- * Updated : 2023-11-02
+ * Updated : 2023-11-22
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
@@ -30,7 +30,7 @@ class NavercertService extends BaseService
   }
 
   public function encrypt($data) {
-    return parent::encrypt($data, 'AES');
+    return parent::encryptTo($data, 'AES');
   }
 
   /**

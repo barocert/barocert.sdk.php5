@@ -13,7 +13,7 @@
  * Author : lsh (code@linkhubcorp.com)
  * Contributor : jws (code@linkhubcorp.com)
  * Written : 2023-03-13
- * Updated : 2023-11-02
+ * Updated : 2023-11-22
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
@@ -31,7 +31,7 @@ class PasscertService extends BaseService
   }
 
   public function encrypt($data) {
-    return parent::encrypt($data, 'AES');
+    return parent::encryptTo($data, 'AES');
   }
 
   /**
@@ -540,13 +540,13 @@ class PassIdentity
 
 class PassIdentityReceipt
 {
-  public $receiptId;
+  public $receiptID;
   public $scheme;
   public $marketUrl;
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
     isset($jsonInfo->marketUrl) ? $this->marketUrl = $jsonInfo->marketUrl : null;
   }
@@ -662,13 +662,13 @@ class PassSign
 
 class PassSignReceipt
 {
-  public $receiptId;
+  public $receiptID;
   public $scheme;
   public $marketUrl;
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
     isset($jsonInfo->marketUrl) ? $this->marketUrl = $jsonInfo->marketUrl : null;
   }
@@ -792,13 +792,13 @@ class PassCMS
 
 class PassCMSReceipt
 {
-  public $receiptId;
+  public $receiptID;
   public $scheme;
   public $marketUrl;
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->receiptId) ? $this->receiptID = $jsonInfo->receiptId : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
     isset($jsonInfo->marketUrl) ? $this->marketUrl = $jsonInfo->marketUrl : null;
   }
@@ -912,13 +912,13 @@ class PassLogin
 
 class PassLoginReceipt
 {
-  public $receiptId;
+  public $receiptID;
   public $scheme;
   public $marketUrl;
 
   public function fromJsonInfo($jsonInfo)
   {
-    isset($jsonInfo->receiptId) ? $this->receiptId = $jsonInfo->receiptId : null;
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
     isset($jsonInfo->marketUrl) ? $this->marketUrl = $jsonInfo->marketUrl : null;
   }

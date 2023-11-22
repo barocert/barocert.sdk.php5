@@ -13,7 +13,7 @@
  * Author : lsh (code@linkhubcorp.com)
  * Contributor : jws (code@linkhubcorp.com)
  * Written : 2023-03-13
- * Updated : 2023-11-02
+ * Updated : 2023-11-22
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
@@ -31,7 +31,7 @@ class KakaocertService extends BaseService
   }
 
   public function encrypt($data) {
-    return parent::encrypt($data, 'AES');
+    return parent::encryptTo($data, 'AES');
   }
 
   /**
@@ -170,8 +170,10 @@ class KakaocertService extends BaseService
     if (is_null($KakaoSign->expireIn) || empty($KakaoSign->expireIn)) {
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
     }
-    if (is_null($KakaoSign->reqTitle) || empty($KakaoSign->reqTitle)) {
-      throw new BarocertException('인증요청 메시지 제목이 입력되지 않았습니다.');
+    if (is_null($KakaoSign->signTitle) || empty($KakaoSign->signTitle)) {
+      if(is_null($KakaoSign->reqTitle) || empty($KakaoSign->reqTitle)) {
+        throw new BarocertException('서명 요청 제목이 입력되지 않았습니다.');
+      }
     }
     if (is_null($KakaoSign->token) || empty($KakaoSign->token)) {
       throw new BarocertException('토큰 원문이 입력되지 않았습니다.');
@@ -285,7 +287,7 @@ class KakaocertService extends BaseService
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
     }
     if ($this->isNullorEmptyTitle($KakaoMultiSign->tokens)) {
-      throw new BarocertException('인증요청 메시지 제목이 입력되지 않았습니다.');
+      throw new BarocertException('서명 요청 제목이 입력되지 않았습니다.');
     }
     if ($this->isNullorEmptyToken($KakaoMultiSign->tokens)) {
       throw new BarocertException('토큰 원문이 입력되지 않았습니다.');
@@ -516,8 +518,9 @@ class KakaocertService extends BaseService
     if($multiSignTokens == null) return true;
     foreach($multiSignTokens as $signTokens){
       if($signTokens == null) return true;
-      if (is_null($signTokens -> reqTitle) || empty($signTokens -> reqTitle)) {
-        return true;
+      if (is_null($signTokens -> signTitle) || empty($signTokens -> signTitle)) {
+        if (is_null($signTokens -> reqTitle) || empty($signTokens -> reqTitle)) {
+          return true;
       }
     }
     return false;
@@ -542,6 +545,7 @@ class KakaoIdentity
   public $receiverName;
   public $receiverBirthday;
   public $reqTitle;
+  public $extraMessage;
   public $expireIn;
   public $token;
   public $returnURL;
@@ -624,6 +628,8 @@ class KakaoSign
   public $receiverName;
   public $receiverBirthday;
   public $reqTitle;
+  public $signTitle;
+  public $extraMessage;
   public $expireIn;
   public $token;
   public $tokenType;
@@ -708,6 +714,7 @@ class KakaoMultiSign
   public $receiverName;
   public $receiverBirthday;
   public $reqTitle;
+  public $extraMessage;
   public $expireIn;
   public $tokens;
   public $tokenType;
@@ -718,6 +725,7 @@ class KakaoMultiSign
 class KakaoMultiSignTokens
 {
   public $reqTitle;
+  public $signTitle;
   public $token;
 }
 
@@ -799,6 +807,7 @@ class KakaoCMS
   public $receiverName;
   public $receiverBirthday;
   public $reqTitle;
+  public $extraMessage;
   public $expireIn;
   public $returnURL;	
   public $requestCorp;
