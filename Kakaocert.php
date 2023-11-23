@@ -521,6 +521,7 @@ class KakaocertService extends BaseService
       if (is_null($signTokens -> signTitle) || empty($signTokens -> signTitle)) {
         if (is_null($signTokens -> reqTitle) || empty($signTokens -> reqTitle)) {
           return true;
+        }
       }
     }
     return false;
