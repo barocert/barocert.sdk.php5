@@ -13,7 +13,7 @@
  * Author : lsh (code@linkhubcorp.com)
  * Contributor : jws (code@linkhubcorp.com)
  * Written : 2023-03-13
- * Updated : 2023-11-22
+ * Updated : 2023-11-28
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
@@ -170,10 +170,8 @@ class KakaocertService extends BaseService
     if (is_null($KakaoSign->expireIn) || empty($KakaoSign->expireIn)) {
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
     }
-    if (is_null($KakaoSign->signTitle) || empty($KakaoSign->signTitle)) {
-      if(is_null($KakaoSign->reqTitle) || empty($KakaoSign->reqTitle)) {
+    if ((is_null($KakaoSign->signTitle) || empty($KakaoSign->signTitle)) && (is_null($KakaoSign->reqTitle) || empty($KakaoSign->reqTitle))) {
         throw new BarocertException('서명 요청 제목이 입력되지 않았습니다.');
-      }
     }
     if (is_null($KakaoSign->token) || empty($KakaoSign->token)) {
       throw new BarocertException('토큰 원문이 입력되지 않았습니다.');
@@ -190,7 +188,6 @@ class KakaocertService extends BaseService
     $KakaoSignReceipt->fromJsonInfo($result);
     return $KakaoSignReceipt;
   }
-
 
   /**
    * 전자서명 상태 확인(단건)
@@ -295,7 +292,6 @@ class KakaocertService extends BaseService
     if (is_null($KakaoMultiSign->tokenType) || empty($KakaoMultiSign->tokenType)) {
       throw new BarocertException('원문 유형이 입력되지 않았습니다.');
     }
-
 
     $postdata = json_encode($KakaoMultiSign);
     $result = parent::executeCURL('/KAKAO/MultiSign/' . $ClientCode, true, $postdata);
@@ -518,10 +514,8 @@ class KakaocertService extends BaseService
     if($multiSignTokens == null) return true;
     foreach($multiSignTokens as $signTokens){
       if($signTokens == null) return true;
-      if (is_null($signTokens -> signTitle) || empty($signTokens -> signTitle)) {
-        if (is_null($signTokens -> reqTitle) || empty($signTokens -> reqTitle)) {
+      if ((is_null($signTokens -> signTitle) || empty($signTokens -> signTitle)) && (is_null($signTokens -> reqTitle) || empty($signTokens -> reqTitle))) {
           return true;
-        }
       }
     }
     return false;
