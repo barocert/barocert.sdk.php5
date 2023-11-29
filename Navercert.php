@@ -12,7 +12,7 @@
  * https://www.linkhub.co.kr
  * Author : csh (code@linkhubcorp.com)
  * Written : 2023-09-01
- * Updated : 2023-11-28
+ * Updated : 2023-11-29
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
@@ -20,6 +20,7 @@
  */
 
 require_once 'Base.php';
+require 'Util.php';
 
 class NavercertService extends BaseService
 {
@@ -38,31 +39,31 @@ class NavercertService extends BaseService
    */
   public function requestIdentity($ClientCode, $NaverIdentity)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($NaverIdentity) || empty($NaverIdentity)) {
+    if (String::isNullorEmpty($NaverIdentity)) {
       throw new BarocertException('본인인증 요청정보가 입력되지 않았습니다.');
     }
-    if (is_null($NaverIdentity->receiverHP) || empty($NaverIdentity->receiverHP)) {
+    if (String::isNullorEmpty($NaverIdentity->receiverHP)) {
       throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
     }
-    if (is_null($NaverIdentity->receiverName) || empty($NaverIdentity->receiverName)) {
+    if (String::isNullorEmpty($NaverIdentity->receiverName)) {
       throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
     }
-    if (is_null($NaverIdentity->receiverBirthday) || empty($NaverIdentity->receiverBirthday)) {
+    if (String::isNullorEmpty($NaverIdentity->receiverBirthday)) {
       throw new BarocertException('생년월일이 입력되지 않았습니다.');
     }
-    if (is_null($NaverIdentity->callCenterNum) || empty($NaverIdentity->callCenterNum)) {
+    if (String::isNullorEmpty($NaverIdentity->callCenterNum)) {
       throw new BarocertException('고객센터 연락처가 입력되지 않았습니다.');
     }
-    if (is_null($NaverIdentity->expireIn) || empty($NaverIdentity->expireIn)) {
+    if (String::isNullorEmpty($NaverIdentity->expireIn)) {
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
     }
 
@@ -80,19 +81,19 @@ class NavercertService extends BaseService
    */
   public function getIdentityStatus($ClientCode, $ReceiptID)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($ReceiptID) || empty($ReceiptID)) {
+    if (String::isNullorEmpty($ReceiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ReceiptID) == 0) {
+    if (String::isNumber($ReceiptID) == 0) {
       throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ReceiptID) != 32) {
@@ -111,19 +112,19 @@ class NavercertService extends BaseService
    */
   public function verifyIdentity($ClientCode, $ReceiptID)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($ReceiptID) || empty($ReceiptID)) {
+    if (String::isNullorEmpty($ReceiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ReceiptID) == 0) {
+    if (String::isNumber($ReceiptID) == 0) {
       throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ReceiptID) != 32) {
@@ -142,40 +143,40 @@ class NavercertService extends BaseService
    */
   public function RequestSign($ClientCode, $NaverSign)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($NaverSign) || empty($NaverSign)) {
+    if (String::isNullorEmpty($NaverSign)) {
       throw new BarocertException('전자서명 요청정보가 입력되지 않았습니다.');
     }
-    if (is_null($NaverSign->receiverHP) || empty($NaverSign->receiverHP)) {
+    if (String::isNullorEmpty($NaverSign->receiverHP)) {
       throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
     }
-    if (is_null($NaverSign->receiverName) || empty($NaverSign->receiverName)) {
+    if (String::isNullorEmpty($NaverSign->receiverName)) {
       throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
     }
-    if (is_null($NaverSign->receiverBirthday) || empty($NaverSign->receiverBirthday)) {
+    if (String::isNullorEmpty($NaverSign->receiverBirthday)) {
       throw new BarocertException('생년월일이 입력되지 않았습니다.');
     }
-    if (is_null($NaverSign->callCenterNum) || empty($NaverSign->callCenterNum)) {
+    if (String::isNullorEmpty($NaverSign->callCenterNum)) {
       throw new BarocertException('고객센터 연락처가 입력되지 않았습니다.');
     }
-    if (is_null($NaverSign->expireIn) || empty($NaverSign->expireIn)) {
+    if (String::isNullorEmpty($NaverSign->expireIn)) {
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
     }
-    if (is_null($NaverSign->reqTitle) || empty($NaverSign->reqTitle)) {
+    if (String::isNullorEmpty($NaverSign->reqTitle)) {
       throw new BarocertException('인증요청 메시지 제목이 입력되지 않았습니다.');
     }
-    if (is_null($NaverSign->token) || empty($NaverSign->token)) {
+    if (String::isNullorEmpty($NaverSign->token)) {
       throw new BarocertException('토큰 원문이 입력되지 않았습니다.');
     }
-    if (is_null($NaverSign->tokenType) || empty($NaverSign->tokenType)) {
+    if (String::isNullorEmpty($NaverSign->tokenType)) {
       throw new BarocertException('원문 유형이 입력되지 않았습니다.');
     }
 
@@ -194,19 +195,19 @@ class NavercertService extends BaseService
    */
   public function getSignStatus($ClientCode, $ReceiptID)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($ReceiptID) || empty($ReceiptID)) {
+    if (String::isNullorEmpty($ReceiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ReceiptID) == 0) {
+    if (String::isNumber($ReceiptID) == 0) {
       throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ReceiptID) != 32) {
@@ -225,19 +226,19 @@ class NavercertService extends BaseService
    */
   public function verifySign($ClientCode, $ReceiptID)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($ReceiptID) || empty($ReceiptID)) {
+    if (String::isNullorEmpty($ReceiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ReceiptID) == 0) {
+    if (String::isNumber($ReceiptID) == 0) {
       throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ReceiptID) != 32) {
@@ -256,34 +257,31 @@ class NavercertService extends BaseService
    */
   public function requestMultiSign($ClientCode, $NaverMultiSign)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (is_null($ClientCode) || empty($ClientCode)) {
-      throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
-    }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($NaverMultiSign) || empty($NaverMultiSign)) {
+    if (String::isNullorEmpty($NaverMultiSign)) {
       throw new BarocertException('전자서명 요청정보가 입력되지 않았습니다.');
     }
-    if (is_null($NaverMultiSign->receiverHP) || empty($NaverMultiSign->receiverHP)) {
+    if (String::isNullorEmpty($NaverMultiSign->receiverHP)) {
       throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
     }
-    if (is_null($NaverMultiSign->receiverName) || empty($NaverMultiSign->receiverName)) {
+    if (String::isNullorEmpty($NaverMultiSign->receiverName)) {
       throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
     }
-    if (is_null($NaverMultiSign->receiverBirthday) || empty($NaverMultiSign->receiverBirthday)) {
+    if (String::isNullorEmpty($NaverMultiSign->receiverBirthday)) {
       throw new BarocertException('생년월일이 입력되지 않았습니다.');
     }
-    if (is_null($NaverMultiSign->callCenterNum) || empty($NaverMultiSign->callCenterNum)) {
+    if (String::isNullorEmpty($NaverMultiSign->callCenterNum)) {
       throw new BarocertException('고객센터 연락처가 입력되지 않았습니다.');
     }
-    if (is_null($NaverMultiSign->expireIn) || empty($NaverMultiSign->expireIn)) {
+    if (String::isNullorEmpty($NaverMultiSign->expireIn)) {
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
     }
     if ($this->isNullorEmptyToken($NaverMultiSign->tokens)) {
@@ -306,19 +304,19 @@ class NavercertService extends BaseService
    */
   public function getMultiSignStatus($ClientCode, $ReceiptID)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($ReceiptID) || empty($ReceiptID)) {
+    if (String::isNullorEmpty($ReceiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ReceiptID) == 0) {
+    if (String::isNumber($ReceiptID) == 0) {
       throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ReceiptID) != 32) {
@@ -337,19 +335,19 @@ class NavercertService extends BaseService
    */
   public function verifyMultiSign($ClientCode, $ReceiptID)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($ReceiptID) || empty($ReceiptID)) {
+    if (String::isNullorEmpty($ReceiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ReceiptID) == 0) {
+    if (String::isNumber($ReceiptID) == 0) {
       throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ReceiptID) != 32) {

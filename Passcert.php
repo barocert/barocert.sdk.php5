@@ -13,7 +13,7 @@
  * Author : lsh (code@linkhubcorp.com)
  * Contributor : jws (code@linkhubcorp.com)
  * Written : 2023-03-13
- * Updated : 2023-11-28
+ * Updated : 2023-11-29
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
@@ -21,6 +21,7 @@
  */
 
 require_once 'Base.php';
+require 'Util.php';
 
 class PasscertService extends BaseService
 {
@@ -33,40 +34,40 @@ class PasscertService extends BaseService
   public function encrypt($data) {
     return parent::encryptTo($data, 'AES');
   }
-
+  
   /**
    * 본인인증 요청
    */
   public function requestIdentity($ClientCode, $PassIdentity)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($PassIdentity) || empty($PassIdentity)) {
+    if (String::isNullorEmpty($PassIdentity)) {
       throw new BarocertException('본인인증 요청정보가 입력되지 않았습니다.');
     }
-    if (is_null($PassIdentity->receiverHP) || empty($PassIdentity->receiverHP)) {
+    if (String::isNullorEmpty($PassIdentity->receiverHP)) {
       throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
     }
-    if (is_null($PassIdentity->receiverName) || empty($PassIdentity->receiverName)) {
+    if (String::isNullorEmpty($PassIdentity->receiverName)) {
       throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
     }
-    if (is_null($PassIdentity->reqTitle) || empty($PassIdentity->reqTitle)) {
+    if (String::isNullorEmpty($PassIdentity->reqTitle)) {
       throw new BarocertException('인증요청 메시지 제목이 입력되지 않았습니다.');
     }
-    if (is_null($PassIdentity->callCenterNum) || empty($PassIdentity->callCenterNum)) {
+    if (String::isNullorEmpty($PassIdentity->callCenterNum)) {
       throw new BarocertException('고객센터 연락처가 입력되지 않았습니다.');
     }
-    if (is_null($PassIdentity->expireIn) || empty($PassIdentity->expireIn)) {
+    if (String::isNullorEmpty($PassIdentity->expireIn)) {
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
     }
-    if (is_null($PassIdentity->token) || empty($PassIdentity->token)) {
+    if (String::isNullorEmpty($PassIdentity->token)) {
       throw new BarocertException('토큰 원문이 입력되지 않았습니다.');
     }
 
@@ -78,25 +79,25 @@ class PasscertService extends BaseService
     $PassIdentityReceipt->fromJsonInfo($result);
     return $PassIdentityReceipt;
   }
-
+  
   /**
    * 본인인증 상태확인
    */
   public function getIdentityStatus($ClientCode, $ReceiptID)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode) || empty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($ReceiptID) || empty($ReceiptID)) {
+    if (String::isNullorEmpty($ReceiptID) || empty($ReceiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ReceiptID) == 0) {
+    if (String::isNumber($ReceiptID) == 0) {
       throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ReceiptID) != 32) {
@@ -115,31 +116,31 @@ class PasscertService extends BaseService
    */
   public function verifyIdentity($ClientCode, $ReceiptID, $PassIdentityVerify)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($ReceiptID) || empty($ReceiptID)) {
+    if (String::isNullorEmpty($ReceiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ReceiptID) == 0) {
+    if (String::isNumber($ReceiptID) == 0) {
       throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ReceiptID) != 32) {
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
-    if (is_null($PassIdentityVerify) || empty($PassIdentityVerify)) {
+    if (String::isNullorEmpty($PassIdentityVerify)) {
       throw new BarocertException('본인인증 검증 요청 정보가 입력되지 않았습니다.');
     }
-    if (is_null($PassIdentityVerify->receiverHP) || empty($PassIdentityVerify->receiverHP)) {
+    if (String::isNullorEmpty($PassIdentityVerify->receiverHP)) {
       throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
     }
-    if (is_null($PassIdentityVerify->receiverName) || empty($PassIdentityVerify->receiverName)) {
+    if (String::isNullorEmpty($PassIdentityVerify->receiverName)) {
       throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
     }
 
@@ -157,37 +158,37 @@ class PasscertService extends BaseService
    */
   public function RequestSign($ClientCode, $PassSign)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($PassSign) || empty($PassSign)) {
+    if (String::isNullorEmpty($PassSign)) {
       throw new BarocertException('전자서명 요청정보가 입력되지 않았습니다.');
     }
-    if (is_null($PassSign->receiverHP) || empty($PassSign->receiverHP)) {
+    if (String::isNullorEmpty($PassSign->receiverHP)) {
       throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
     }
-    if (is_null($PassSign->receiverName) || empty($PassSign->receiverName)) {
+    if (String::isNullorEmpty($PassSign->receiverName)) {
       throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
     }
-    if (is_null($PassSign->reqTitle) || empty($PassSign->reqTitle)) {
+    if (String::isNullorEmpty($PassSign->reqTitle)) {
       throw new BarocertException('인증요청 메시지 제목이 입력되지 않았습니다.');
     }
-    if (is_null($PassSign->callCenterNum) || empty($PassSign->callCenterNum)) {
+    if (String::isNullorEmpty($PassSign->callCenterNum)) {
       throw new BarocertException('고객센터 연락처가 입력되지 않았습니다.');
     }
-    if (is_null($PassSign->expireIn) || empty($PassSign->expireIn)) {
+    if (String::isNullorEmpty($PassSign->expireIn)) {
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
     }
-    if (is_null($PassSign->token) || empty($PassSign->token)) {
+    if (String::isNullorEmpty($PassSign->token)) {
       throw new BarocertException('토큰 원문이 입력되지 않았습니다.');
     }
-    if (is_null($PassSign->tokenType) || empty($PassSign->tokenType)) {
+    if (String::isNullorEmpty($PassSign->tokenType)) {
       throw new BarocertException('원문 유형이 입력되지 않았습니다.');
     }
 
@@ -205,19 +206,19 @@ class PasscertService extends BaseService
    */
   public function getSignStatus($ClientCode, $ReceiptID)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($ReceiptID) || empty($ReceiptID)) {
+    if (String::isNullorEmpty($ReceiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ReceiptID) == 0) {
+    if (String::isNumber($ReceiptID) == 0) {
       throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ReceiptID) != 32) {
@@ -236,31 +237,31 @@ class PasscertService extends BaseService
    */
   public function verifySign($ClientCode, $ReceiptID, $PassSignVerify)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($ReceiptID) || empty($ReceiptID)) {
+    if (String::isNullorEmpty($ReceiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ReceiptID) == 0) {
+    if (String::isNumber($ReceiptID) == 0) {
       throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ReceiptID) != 32) {
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
-    if (is_null($PassSignVerify) || empty($PassSignVerify)) {
+    if (String::isNullorEmpty($PassSignVerify)) {
       throw new BarocertException('전자서명 검증 요청 정보가 입력되지 않았습니다.');
     }
-    if (is_null($PassSignVerify->receiverHP) || empty($PassSignVerify->receiverHP)) {
+    if (String::isNullorEmpty($PassSignVerify->receiverHP)) {
       throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
     }
-    if (is_null($PassSignVerify->receiverName) || empty($PassSignVerify->receiverName)) {
+    if (String::isNullorEmpty($PassSignVerify->receiverName)) {
       throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
     }
     
@@ -278,43 +279,43 @@ class PasscertService extends BaseService
    */
   public function requestCMS($ClientCode, $PassCMS)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($PassCMS) || empty($PassCMS)) {
+    if (String::isNullorEmpty($PassCMS)) {
       throw new BarocertException('자동이체 출금동의 요청정보가 입력되지 않았습니다.');
     }
-    if (is_null($PassCMS->receiverHP) || empty($PassCMS->receiverHP)) {
+    if (String::isNullorEmpty($PassCMS->receiverHP)) {
       throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
     }
-    if (is_null($PassCMS->receiverName) || empty($PassCMS->receiverName)) {
+    if (String::isNullorEmpty($PassCMS->receiverName)) {
       throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
     }
-    if (is_null($PassCMS->reqTitle) || empty($PassCMS->reqTitle)) {
+    if (String::isNullorEmpty($PassCMS->reqTitle)) {
       throw new BarocertException('인증요청 메시지 제목이 입력되지 않았습니다.');
     }
-    if (is_null($PassCMS->callCenterNum) || empty($PassCMS->callCenterNum)) {
+    if (String::isNullorEmpty($PassCMS->callCenterNum)) {
       throw new BarocertException('고객센터 연락처가 입력되지 않았습니다.');
     }
-    if (is_null($PassCMS->expireIn) || empty($PassCMS->expireIn)) {
+    if (String::isNullorEmpty($PassCMS->expireIn)) {
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
     }
-    if (is_null($PassCMS->bankName) || empty($PassCMS->bankName)) {
+    if (String::isNullorEmpty($PassCMS->bankName)) {
       throw new BarocertException('출금은행명이 입력되지 않았습니다.');
     }
-    if (is_null($PassCMS->bankAccountNum) || empty($PassCMS->bankAccountNum)) {
+    if (String::isNullorEmpty($PassCMS->bankAccountNum)) {
       throw new BarocertException('출금계좌번호가 입력되지 않았습니다.');
     }
-    if (is_null($PassCMS->bankAccountName) || empty($PassCMS->bankAccountName)) {
+    if (String::isNullorEmpty($PassCMS->bankAccountName)) {
       throw new BarocertException('출금계좌 예금주명이 입력되지 않았습니다.');
     }
-    if (is_null($PassCMS->bankServiceType) || empty($PassCMS->bankServiceType)) {
+    if (String::isNullorEmpty($PassCMS->bankServiceType)) {
       throw new BarocertException('출금 유형이 입력되지 않았습니다.');
     }
 
@@ -332,19 +333,19 @@ class PasscertService extends BaseService
    */
   public function getCMSStatus($ClientCode, $ReceiptID)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($ReceiptID) || empty($ReceiptID)) {
+    if (String::isNullorEmpty($ReceiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ReceiptID) == 0) {
+    if (String::isNumber($ReceiptID) == 0) {
       throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ReceiptID) != 32) {
@@ -363,31 +364,31 @@ class PasscertService extends BaseService
    */
   public function verifyCMS($ClientCode, $ReceiptID, $PassCMSVerify)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($ReceiptID) || empty($ReceiptID)) {
+    if (String::isNullorEmpty($ReceiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ReceiptID) == 0) {
+    if (String::isNumber($ReceiptID) == 0) {
       throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ReceiptID) != 32) {
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
-    if (is_null($PassCMSVerify) || empty($PassCMSVerify)) {
+    if (String::isNullorEmpty($PassCMSVerify)) {
       throw new BarocertException('출금동의 검증 요청 정보가 입력되지 않았습니다.');
     }
-    if (is_null($PassCMSVerify->receiverHP) || empty($PassCMSVerify->receiverHP)) {
+    if (String::isNullorEmpty($PassCMSVerify->receiverHP)) {
       throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
     }
-    if (is_null($PassCMSVerify->receiverName) || empty($PassCMSVerify->receiverName)) {
+    if (String::isNullorEmpty($PassCMSVerify->receiverName)) {
       throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
     }
 
@@ -405,34 +406,34 @@ class PasscertService extends BaseService
    */
   public function requestLogin($ClientCode, $PassLogin)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($PassLogin) || empty($PassLogin)) {
+    if (String::isNullorEmpty($PassLogin)) {
       throw new BarocertException('간편로그인 요청정보가 입력되지 않았습니다.');
     }
-    if (is_null($PassLogin->receiverHP) || empty($PassLogin->receiverHP)) {
+    if (String::isNullorEmpty($PassLogin->receiverHP)) {
       throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
     }
-    if (is_null($PassLogin->receiverName) || empty($PassLogin->receiverName)) {
+    if (String::isNullorEmpty($PassLogin->receiverName)) {
       throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
     }
-    if (is_null($PassLogin->reqTitle) || empty($PassLogin->reqTitle)) {
+    if (String::isNullorEmpty($PassLogin->reqTitle)) {
       throw new BarocertException('인증요청 메시지 제목이 입력되지 않았습니다.');
     }
-    if (is_null($PassLogin->callCenterNum) || empty($PassLogin->callCenterNum)) {
+    if (String::isNullorEmpty($PassLogin->callCenterNum)) {
       throw new BarocertException('고객센터 연락처가 입력되지 않았습니다.');
     }
-    if (is_null($PassLogin->expireIn) || empty($PassLogin->expireIn)) {
+    if (String::isNullorEmpty($PassLogin->expireIn)) {
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
     }
-    if (is_null($PassLogin->token) || empty($PassLogin->token)) {
+    if (String::isNullorEmpty($PassLogin->token)) {
       throw new BarocertException('토큰 원문이 입력되지 않았습니다.');
     }
 
@@ -450,19 +451,19 @@ class PasscertService extends BaseService
    */
   public function getLoginStatus($ClientCode, $ReceiptID)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($ReceiptID) || empty($ReceiptID)) {
+    if (String::isNullorEmpty($ReceiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ReceiptID) == 0) {
+    if (String::isNumber($ReceiptID) == 0) {
       throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ReceiptID) != 32) {
@@ -481,31 +482,31 @@ class PasscertService extends BaseService
    */
   public function verifyLogin($ClientCode, $ReceiptID, $PassLoginVerify)
   {
-    if (is_null($ClientCode) || empty($ClientCode)) {
+    if (String::isNullorEmpty($ClientCode)) {
       throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ClientCode) == 0) {
+    if (String::isNumber($ClientCode) == 0) {
       throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ClientCode) != 12) {
       throw new BarocertException('이용기관코드는 12자 입니다.');
     }
-    if (is_null($ReceiptID) || empty($ReceiptID)) {
+    if (String::isNullorEmpty($ReceiptID)) {
       throw new BarocertException('접수아이디가 입력되지 않았습니다.');
     }
-    if (preg_match("/^[0-9]*$/", $ReceiptID) == 0) {
+    if (String::isNumber($ReceiptID) == 0) {
       throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
     }
     if (strlen($ReceiptID) != 32) {
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
-    if (is_null($PassLoginVerify) || empty($PassLoginVerify)) {
+    if (String::isNullorEmpty($PassLoginVerify)) {
       throw new BarocertException('간편로그인 검증 요청 정보가 입력되지 않았습니다.');
     }
-    if (is_null($PassLoginVerify->receiverHP) || empty($PassLoginVerify->receiverHP)) {
+    if (String::isNullorEmpty($PassLoginVerify->receiverHP)) {
       throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
     }
-    if (is_null($PassLoginVerify->receiverName) || empty($PassLoginVerify->receiverName)) {
+    if (String::isNullorEmpty($PassLoginVerify->receiverName)) {
       throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
     }
 
