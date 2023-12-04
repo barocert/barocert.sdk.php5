@@ -515,7 +515,7 @@ class KakaocertService extends BaseService
     if($multiSignTokens == null) return true;
     foreach($multiSignTokens as $signTokens){
       if($signTokens == null) return true;
-      if(String::isNullorEmpty($KakaoSign->signTitle) && String::isNullorEmpty($KakaoSign->reqTitle)) return true;
+      if(String::isNullorEmpty($signTokens->signTitle) && String::isNullorEmpty($signTokens->reqTitle)) return true;
     }
     return false;
   }
