@@ -246,6 +246,12 @@ class BaseService
     }
   }
 
+  public function sha256URLEncode($data){
+    $hash = hash('sha256', $data, true);
+    $base64Encoded = rtrim(strtr(base64_encode($hash), '+/', '-_'), '=');
+    return $base64Encoded;
+  }
+
   public function encryptTo($data, $algorithm){
     if($algorithm === "AES") {
       if ($this->EncryptMode === "GCM") {

@@ -12,7 +12,7 @@
  * https://www.linkhub.co.kr
  * Author : csh (code@linkhubcorp.com)
  * Written : 2023-09-01
- * Updated : 2023-11-29
+ * Updated : 2023-12-07
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
@@ -26,12 +26,16 @@ class NavercertService extends BaseService
 {
   public function __construct($LinkID, $SecretKey)
   {
-    $scope = array('421', '422', '423');
+    $scope = array('421', '422', '423', '424');
     parent::__construct($LinkID, $SecretKey, $scope);
   }
 
   public function encrypt($data) {
     return parent::encryptTo($data, 'AES');
+  }
+
+  public function sha256($data) {
+    return parent::sha256URLEncode($data);
   }
 
   /**
@@ -361,6 +365,110 @@ class NavercertService extends BaseService
     return $NaverMultiSignResult;
   }
 
+  /**
+   * 출금동의 요청
+   */
+  public function requestCMS($ClientCode, $NaverCMS)
+  {
+    if (Stringz::isNullorEmpty($ClientCode)) {
+      throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
+    }
+    if (Stringz::isNumber($ClientCode) == 0) {
+      throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($ClientCode) != 12) {
+      throw new BarocertException('이용기관코드는 12자 입니다.');
+    }
+    if (Stringz::isNullorEmpty($NaverCMS)) {
+      throw new BarocertException('출금동의 요청정보가 입력되지 않았습니다.');
+    }
+    if (Stringz::isNullorEmpty($NaverCMS->receiverHP)) {
+      throw new BarocertException('수신자 휴대폰번호가 입력되지 않았습니다.');
+    }
+    if (Stringz::isNullorEmpty($NaverCMS->receiverName)) {
+      throw new BarocertException('수신자 성명이 입력되지 않았습니다.');
+    }
+    if (Stringz::isNullorEmpty($NaverCMS->receiverBirthday)) {
+      throw new BarocertException('생년월일이 입력되지 않았습니다.');
+    }
+    if (Stringz::isNullorEmpty($NaverCMS->callCenterNum)) {
+      throw new BarocertException('고객센터 연락처가 입력되지 않았습니다.');
+    }
+    if (Stringz::isNullorEmpty($NaverCMS->expireIn)) {
+      throw new BarocertException('만료시간이 입력되지 않았습니다.');
+    }
+
+    $postdata = json_encode($NaverCMS);
+    
+    $result = parent::executeCURL('/NAVER/CMS/' . $ClientCode, true, $postdata);
+
+    $NaverCMSReceipt = new NaverCMSReceipt();
+    $NaverCMSReceipt->fromJsonInfo($result);
+    return $NaverCMSReceipt;
+  }
+
+  /**
+   * 출금동의 상태확인
+   */
+  public function getCMSStatus($ClientCode, $ReceiptID)
+  {
+    if (Stringz::isNullorEmpty($ClientCode)) {
+      throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
+    }
+    if (Stringz::isNumber($ClientCode) == 0) {
+      throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($ClientCode) != 12) {
+      throw new BarocertException('이용기관코드는 12자 입니다.');
+    }
+    if (Stringz::isNullorEmpty($ReceiptID)) {
+      throw new BarocertException('접수아이디가 입력되지 않았습니다.');
+    }
+    if (Stringz::isNumber($ReceiptID) == 0) {
+      throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($ReceiptID) != 32) {
+      throw new BarocertException('접수아이디는 32자 입니다.');
+    }
+
+    $result = parent::executeCURL('/NAVER/CMS/' . $ClientCode .'/'. $ReceiptID, false, null);
+
+    $NaverCMSStatus = new NaverCMSStatus();
+    $NaverCMSStatus->fromJsonInfo($result);
+    return $NaverCMSStatus;
+  }
+
+  /**
+   * 출금동의 검증
+   */
+  public function verifyCMS($ClientCode, $ReceiptID)
+  {
+    if (Stringz::isNullorEmpty($ClientCode)) {
+      throw new BarocertException('이용기관코드가 입력되지 않았습니다.');
+    }
+    if (Stringz::isNumber($ClientCode) == 0) {
+      throw new BarocertException('이용기관코드는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($ClientCode) != 12) {
+      throw new BarocertException('이용기관코드는 12자 입니다.');
+    }
+    if (Stringz::isNullorEmpty($ReceiptID)) {
+      throw new BarocertException('접수아이디가 입력되지 않았습니다.');
+    }
+    if (Stringz::isNumber($ReceiptID) == 0) {
+      throw new BarocertException('접수아이디는 숫자만 입력할 수 있습니다.');
+    }
+    if (strlen($ReceiptID) != 32) {
+      throw new BarocertException('접수아이디는 32자 입니다.');
+    }
+
+    $result = parent::executeCURL('/NAVER/CMS/' . $ClientCode .'/'. $ReceiptID, true, null);
+
+    $NaverCMSResult = new NaverCMSResult();
+    $NaverCMSResult->fromJsonInfo($result);
+    return $NaverCMSResult;
+  }
+  
   public function isNullorEmptyTokenType($multiSignTokens){
     if($multiSignTokens == null) return true;
     foreach($multiSignTokens as $signTokens){
@@ -660,6 +768,85 @@ class NaverMultiSignResult
     isset($jsonInfo->receiverEmail) ? $this->receiverEmail = $jsonInfo->receiverEmail : null;
     isset($jsonInfo->receiverForeign) ? $this->receiverForeign = $jsonInfo->receiverForeign : null;
     isset($jsonInfo->multiSignedData) ? $this->multiSignedData = $jsonInfo->multiSignedData : null;
+    isset($jsonInfo->ci) ? $this->ci = $jsonInfo->ci : null;
+  }
+}
+
+class NaverCMS
+{
+  public $receiverHP;
+  public $receiverName;
+  public $receiverBirthday;
+  public $callCenterNum;
+  public $reqTitle;
+  public $reqMessage;
+  public $expireIn;
+  public $requestCorp;
+  public $bankName;
+  public $bankAccountNum;
+  public $bankAccountName;
+  public $bankAccountBirthday;
+  public $returnURL;
+  public $deviceOSType;
+  public $appUseYN;
+}
+
+class NaverCMSReceipt
+{
+  public $receiptID;
+  public $scheme;
+  public $marketUrl;
+
+  public function fromJsonInfo($jsonInfo)
+  {
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
+    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
+    isset($jsonInfo->marketUrl) ? $this->marketUrl = $jsonInfo->marketUrl : null;
+  }
+}
+
+class NaverCMSStatus
+{
+  public $receiptID;
+  public $clientCode;
+  public $state;
+  public $expireDT;
+
+  public function fromJsonInfo($jsonInfo)
+  {
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
+    isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
+    isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
+    isset($jsonInfo->expireDT) ? $this->expireDT = $jsonInfo->expireDT : null;
+  }
+}
+
+class NaverCMSResult
+{
+  public $receiptID;
+  public $state;
+  public $receiverName;
+  public $receiverYear;
+  public $receiverDay;
+  public $receiverHP;
+  public $receiverGender;
+  public $receiverEmail;
+  public $receiverForeign;
+  public $signedData;
+  public $ci;
+
+  public function fromJsonInfo($jsonInfo)
+  {
+    isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
+    isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
+    isset($jsonInfo->receiverName) ? $this->receiverName = $jsonInfo->receiverName : null;
+    isset($jsonInfo->receiverYear) ? $this->receiverYear = $jsonInfo->receiverYear : null;
+    isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
+    isset($jsonInfo->receiverHP) ? $this->receiverHP = $jsonInfo->receiverHP : null;
+    isset($jsonInfo->receiverGender) ? $this->receiverGender = $jsonInfo->receiverGender : null;
+    isset($jsonInfo->receiverEmail) ? $this->receiverEmail = $jsonInfo->receiverEmail : null;
+    isset($jsonInfo->receiverForeign) ? $this->receiverForeign = $jsonInfo->receiverForeign : null;
+    isset($jsonInfo->signedData) ? $this->signedData = $jsonInfo->signedData : null;
     isset($jsonInfo->ci) ? $this->ci = $jsonInfo->ci : null;
   }
 }
