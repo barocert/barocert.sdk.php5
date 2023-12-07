@@ -397,6 +397,21 @@ class NavercertService extends BaseService
     if (Stringz::isNullorEmpty($NaverCMS->expireIn)) {
       throw new BarocertException('만료시간이 입력되지 않았습니다.');
     }
+    if (Stringz::isNullorEmpty($NaverCMS->requestCorp)) {
+      throw new BarocertException('청구기관명이 입력되지 않았습니다.');
+    }
+    if (Stringz::isNullorEmpty($NaverCMS->bankName)) {
+      throw new BarocertException('은행명이 입력되지 않았습니다.');
+    }
+    if (Stringz::isNullorEmpty($NaverCMS->bankAccountNum)) {
+      throw new BarocertException('계좌번호가 입력되지 않았습니다.');
+    }
+    if (Stringz::isNullorEmpty($NaverCMS->bankAccountName)) {
+      throw new BarocertException('예금주명이 입력되지 않았습니다.');
+    }
+    if (Stringz::isNullorEmpty($NaverCMS->bankAccountBirthday)) {
+      throw new BarocertException('예금주 생년월일이 입력되지 않았습니다.');
+    }
 
     $postdata = json_encode($NaverCMS);
     
