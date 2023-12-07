@@ -1,6 +1,6 @@
 <?php
 
-class String
+class Stringz
 {
     public function isNumber($str) 
     {

@@ -80,7 +80,7 @@ class BaseService
 
   public function setupEncryptMode()
   {
-    if ((version_compare(PHP_VERSION, '7.0') >= 0))
+    if ((version_compare(PHP_VERSION, '7.1') >= 0))
       return 'GCM';
     else
       return 'CBC';
