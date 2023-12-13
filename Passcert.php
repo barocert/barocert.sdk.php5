@@ -13,7 +13,7 @@
  * Author : lsh (code@linkhubcorp.com)
  * Contributor : jws (code@linkhubcorp.com)
  * Written : 2023-03-13
- * Updated : 2023-12-07
+ * Updated : 2023-12-13
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
@@ -580,22 +580,22 @@ class PassIdentityStatus
     isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
     isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
-    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
-    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;
-    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;
-    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;
-    isset($jsonInfo->reqMessage) ? $this->reqMessage = $jsonInfo->reqMessage : null;
+    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;                      // deprecated
+    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;    // deprecated
+    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;       // deprecated
+    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;                      // deprecated
+    isset($jsonInfo->reqMessage) ? $this->reqMessage = $jsonInfo->reqMessage : null;                // deprecated
     isset($jsonInfo->requestDT) ? $this->requestDT = $jsonInfo->requestDT : null;
     isset($jsonInfo->completeDT) ? $this->completeDT = $jsonInfo->completeDT : null;
     isset($jsonInfo->expireDT) ? $this->expireDT = $jsonInfo->expireDT : null;
     isset($jsonInfo->rejectDT) ? $this->rejectDT = $jsonInfo->rejectDT : null;
-    isset($jsonInfo->tokenType) ? $this->tokenType = $jsonInfo->tokenType : null;
-    isset($jsonInfo->userAgreementYN) ? $this->userAgreementYN = $jsonInfo->userAgreementYN : null;
-    isset($jsonInfo->receiverInfoYN) ? $this->receiverInfoYN = $jsonInfo->receiverInfoYN : null;
-    isset($jsonInfo->telcoType) ? $this->telcoType = $jsonInfo->telcoType : null;
-    isset($jsonInfo->deviceOSType) ? $this->deviceOSType = $jsonInfo->deviceOSType : null;
-    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
-    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;
+    isset($jsonInfo->tokenType) ? $this->tokenType = $jsonInfo->tokenType : null;                   // deprecated
+    isset($jsonInfo->userAgreementYN) ? $this->userAgreementYN = $jsonInfo->userAgreementYN : null; // deprecated
+    isset($jsonInfo->receiverInfoYN) ? $this->receiverInfoYN = $jsonInfo->receiverInfoYN : null;    // deprecated
+    isset($jsonInfo->telcoType) ? $this->telcoType = $jsonInfo->telcoType : null;                   // deprecated
+    isset($jsonInfo->deviceOSType) ? $this->deviceOSType = $jsonInfo->deviceOSType : null;          // deprecated
+    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;                            // deprecated
+    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;                      // deprecated
   }
 }
 
@@ -705,25 +705,25 @@ class PassSignStatus
     isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
     isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
-    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
-    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;
-    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;
-    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;
-    isset($jsonInfo->reqMessage) ? $this->reqMessage = $jsonInfo->reqMessage : null;
+    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;                                // deprecated
+    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;              // deprecated
+    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;                 // deprecated
+    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;                                // deprecated
+    isset($jsonInfo->reqMessage) ? $this->reqMessage = $jsonInfo->reqMessage : null;                          // deprecated
     isset($jsonInfo->requestDT) ? $this->requestDT = $jsonInfo->requestDT : null;
     isset($jsonInfo->completeDT) ? $this->completeDT = $jsonInfo->completeDT : null;
     isset($jsonInfo->expireDT) ? $this->expireDT = $jsonInfo->expireDT : null;
     isset($jsonInfo->rejectDT) ? $this->rejectDT = $jsonInfo->rejectDT : null;
-    isset($jsonInfo->tokenType) ? $this->tokenType = $jsonInfo->tokenType : null;
-    isset($jsonInfo->userAgreementYN) ? $this->userAgreementYN = $jsonInfo->userAgreementYN : null;
-    isset($jsonInfo->receiverInfoYN) ? $this->receiverInfoYN = $jsonInfo->receiverInfoYN : null;
-    isset($jsonInfo->telcoType) ? $this->telcoType = $jsonInfo->telcoType : null;
-    isset($jsonInfo->deviceOSType) ? $this->deviceOSType = $jsonInfo->deviceOSType : null;
-    isset($jsonInfo->originalTypeCode) ? $this->originalTypeCode = $jsonInfo->originalTypeCode : null;
-    isset($jsonInfo->originalURL) ? $this->originalURL = $jsonInfo->originalURL : null;
-    isset($jsonInfo->originalFormatCode) ? $this->originalFormatCode = $jsonInfo->originalFormatCode : null;
-    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
-    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;
+    isset($jsonInfo->tokenType) ? $this->tokenType = $jsonInfo->tokenType : null;                             // deprecated
+    isset($jsonInfo->userAgreementYN) ? $this->userAgreementYN = $jsonInfo->userAgreementYN : null;           // deprecated
+    isset($jsonInfo->receiverInfoYN) ? $this->receiverInfoYN = $jsonInfo->receiverInfoYN : null;              // deprecated
+    isset($jsonInfo->telcoType) ? $this->telcoType = $jsonInfo->telcoType : null;                             // deprecated
+    isset($jsonInfo->deviceOSType) ? $this->deviceOSType = $jsonInfo->deviceOSType : null;                    // deprecated
+    isset($jsonInfo->originalTypeCode) ? $this->originalTypeCode = $jsonInfo->originalTypeCode : null;        // deprecated
+    isset($jsonInfo->originalURL) ? $this->originalURL = $jsonInfo->originalURL : null;                       // deprecated
+    isset($jsonInfo->originalFormatCode) ? $this->originalFormatCode = $jsonInfo->originalFormatCode : null;  // deprecated
+    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;                                      // deprecated
+    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;                                // deprecated
   }
 }
 
@@ -832,22 +832,22 @@ class PassCMSStatus
     isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
     isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
-    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
-    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;
-    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;
-    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;
-    isset($jsonInfo->reqMessage) ? $this->reqMessage = $jsonInfo->reqMessage : null;
+    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;                      // deprecated
+    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;    // deprecated
+    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;       // deprecated
+    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;                      // deprecated
+    isset($jsonInfo->reqMessage) ? $this->reqMessage = $jsonInfo->reqMessage : null;                // deprecated
     isset($jsonInfo->requestDT) ? $this->requestDT = $jsonInfo->requestDT : null;
     isset($jsonInfo->completeDT) ? $this->completeDT = $jsonInfo->completeDT : null;
     isset($jsonInfo->expireDT) ? $this->expireDT = $jsonInfo->expireDT : null;
     isset($jsonInfo->rejectDT) ? $this->rejectDT = $jsonInfo->rejectDT : null;
-    isset($jsonInfo->tokenType) ? $this->tokenType = $jsonInfo->tokenType : null;
-    isset($jsonInfo->userAgreementYN) ? $this->userAgreementYN = $jsonInfo->userAgreementYN : null;
-    isset($jsonInfo->receiverInfoYN) ? $this->receiverInfoYN = $jsonInfo->receiverInfoYN : null;
-    isset($jsonInfo->telcoType) ? $this->telcoType = $jsonInfo->telcoType : null;
-    isset($jsonInfo->deviceOSType) ? $this->deviceOSType = $jsonInfo->deviceOSType : null;
-    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
-    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;
+    isset($jsonInfo->tokenType) ? $this->tokenType = $jsonInfo->tokenType : null;                   // deprecated
+    isset($jsonInfo->userAgreementYN) ? $this->userAgreementYN = $jsonInfo->userAgreementYN : null; // deprecated
+    isset($jsonInfo->receiverInfoYN) ? $this->receiverInfoYN = $jsonInfo->receiverInfoYN : null;    // deprecated
+    isset($jsonInfo->telcoType) ? $this->telcoType = $jsonInfo->telcoType : null;                   // deprecated
+    isset($jsonInfo->deviceOSType) ? $this->deviceOSType = $jsonInfo->deviceOSType : null;          // deprecated
+    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;                            // deprecated
+    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;                      // deprecated
   }
 }
 
@@ -952,22 +952,22 @@ class PassLoginStatus
     isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
     isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
-    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
-    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;
-    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;
-    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;
-    isset($jsonInfo->reqMessage) ? $this->reqMessage = $jsonInfo->reqMessage : null;
+    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;                      // deprecated
+    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;    // deprecated
+    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;       // deprecated
+    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;                      // deprecated
+    isset($jsonInfo->reqMessage) ? $this->reqMessage = $jsonInfo->reqMessage : null;                // deprecated
     isset($jsonInfo->requestDT) ? $this->requestDT = $jsonInfo->requestDT : null;
     isset($jsonInfo->completeDT) ? $this->completeDT = $jsonInfo->completeDT : null;
     isset($jsonInfo->expireDT) ? $this->expireDT = $jsonInfo->expireDT : null;
     isset($jsonInfo->rejectDT) ? $this->rejectDT = $jsonInfo->rejectDT : null;
-    isset($jsonInfo->tokenType) ? $this->tokenType = $jsonInfo->tokenType : null;
-    isset($jsonInfo->userAgreementYN) ? $this->userAgreementYN = $jsonInfo->userAgreementYN : null;
-    isset($jsonInfo->receiverInfoYN) ? $this->receiverInfoYN = $jsonInfo->receiverInfoYN : null;
-    isset($jsonInfo->telcoType) ? $this->telcoType = $jsonInfo->telcoType : null;
-    isset($jsonInfo->deviceOSType) ? $this->deviceOSType = $jsonInfo->deviceOSType : null;
-    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
-    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;
+    isset($jsonInfo->tokenType) ? $this->tokenType = $jsonInfo->tokenType : null;                   // deprecated
+    isset($jsonInfo->userAgreementYN) ? $this->userAgreementYN = $jsonInfo->userAgreementYN : null; // deprecated
+    isset($jsonInfo->receiverInfoYN) ? $this->receiverInfoYN = $jsonInfo->receiverInfoYN : null;    // deprecated
+    isset($jsonInfo->telcoType) ? $this->telcoType = $jsonInfo->telcoType : null;                   // deprecated
+    isset($jsonInfo->deviceOSType) ? $this->deviceOSType = $jsonInfo->deviceOSType : null;          // deprecated
+    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;                            // deprecated
+    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;                      // deprecated
   }
 }
 

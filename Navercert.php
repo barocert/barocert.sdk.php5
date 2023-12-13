@@ -12,7 +12,7 @@
  * https://www.linkhub.co.kr
  * Author : csh (code@linkhubcorp.com)
  * Written : 2023-09-01
- * Updated : 2023-12-07
+ * Updated : 2023-12-13
  *
  * Thanks for your interest.
  * We welcome any suggestions, feedbacks, blames or anythings.
@@ -539,7 +539,7 @@ class NaverIdentityStatus
   public $receiptID;
   public $clientCode;
   public $state;
-  public $expireIn;
+  public $expireIn; 
   public $callCenterName;
   public $callCenterNum;
   public $returnURL;
@@ -553,14 +553,14 @@ class NaverIdentityStatus
     isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
-    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
-    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;
-    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;
-    isset($jsonInfo->returnURL) ? $this->returnURL = $jsonInfo->returnURL : null;
+    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;                    // deprecated
+    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;  // deprecated
+    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;     // deprecated
+    isset($jsonInfo->returnURL) ? $this->returnURL = $jsonInfo->returnURL : null;                 // deprecated
     isset($jsonInfo->expireDT) ? $this->expireDT = $jsonInfo->expireDT : null;
-    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
-    isset($jsonInfo->deviceOSType) ? $this->deviceOSType = $jsonInfo->deviceOSType : null;
-    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;
+    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;                          // deprecated
+    isset($jsonInfo->deviceOSType) ? $this->deviceOSType = $jsonInfo->deviceOSType : null;        // deprecated
+    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;                    // deprecated
   }
 }
 
@@ -645,16 +645,16 @@ class NaverSignStatus
     isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
-    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
-    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;
-    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;
-    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;
-    isset($jsonInfo->returnURL) ? $this->returnURL = $jsonInfo->returnURL : null;
-    isset($jsonInfo->tokenType) ? $this->tokenType = $jsonInfo->tokenType : null;
+    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;                    // deprecated
+    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;  // deprecated
+    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;     // deprecated
+    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;                    // deprecated
+    isset($jsonInfo->returnURL) ? $this->returnURL = $jsonInfo->returnURL : null;                 // deprecated
+    isset($jsonInfo->tokenType) ? $this->tokenType = $jsonInfo->tokenType : null;                 // deprecated
     isset($jsonInfo->expireDT) ? $this->expireDT = $jsonInfo->expireDT : null;
-    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
-    isset($jsonInfo->deviceOSType) ? $this->deviceOSType = $jsonInfo->deviceOSType : null;
-    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;
+    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;                          // deprecated
+    isset($jsonInfo->deviceOSType) ? $this->deviceOSType = $jsonInfo->deviceOSType : null;        // deprecated
+    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;                    // deprecated
   }
 }
 
@@ -744,16 +744,16 @@ class NaverMultiSignStatus
     isset($jsonInfo->receiptID) ? $this->receiptID = $jsonInfo->receiptID : null;
     isset($jsonInfo->clientCode) ? $this->clientCode = $jsonInfo->clientCode : null;
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
-    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;
-    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;
-    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;
-    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;
-    isset($jsonInfo->returnURL) ? $this->returnURL = $jsonInfo->returnURL : null;
-    isset($jsonInfo->tokenTypes) ? $this->tokenTypes = $jsonInfo->tokenTypes : null;
+    isset($jsonInfo->expireIn) ? $this->expireIn = $jsonInfo->expireIn : null;                    // deprecated
+    isset($jsonInfo->callCenterName) ? $this->callCenterName = $jsonInfo->callCenterName : null;  // deprecated
+    isset($jsonInfo->callCenterNum) ? $this->callCenterNum = $jsonInfo->callCenterNum : null;     // deprecated
+    isset($jsonInfo->reqTitle) ? $this->reqTitle = $jsonInfo->reqTitle : null;                    // deprecated
+    isset($jsonInfo->returnURL) ? $this->returnURL = $jsonInfo->returnURL : null;                 // deprecated
+    isset($jsonInfo->tokenTypes) ? $this->tokenTypes = $jsonInfo->tokenTypes : null;              // deprecated
     isset($jsonInfo->expireDT) ? $this->expireDT = $jsonInfo->expireDT : null;
-    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;
-    isset($jsonInfo->deviceOSType) ? $this->deviceOSType = $jsonInfo->deviceOSType : null;
-    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;
+    isset($jsonInfo->scheme) ? $this->scheme = $jsonInfo->scheme : null;                          // deprecated
+    isset($jsonInfo->deviceOSType) ? $this->deviceOSType = $jsonInfo->deviceOSType : null;        // deprecated
+    isset($jsonInfo->appUseYN) ? $this->appUseYN = $jsonInfo->appUseYN : null;                    // deprecated
   }
 }
 
