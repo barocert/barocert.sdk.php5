@@ -34,8 +34,8 @@ class NavercertService extends BaseService
     return parent::encryptTo($data, 'AES');
   }
 
-  public function sha256($data) {
-    return parent::sha256URLEncode($data);
+  public function sha256_base64url($data) {
+    return parent::sha256ToBase64url($data);
   }
 
   /**
