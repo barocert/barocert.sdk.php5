@@ -1,25 +1,5 @@
 <?php
 
-/**
- * =====================================================================================
- * Class for base module for passcert API SDK. It include base functionality for
- * RESTful web service request and parse json result. It uses Linkhub module
- * to accomplish authentication APIs.
- *
- * This module uses curl and openssl for HTTPS Request. So related modules must
- * be installed and enabled.
- *
- * https://www.linkhub.co.kr
- * Author : lsh (code@linkhubcorp.com)
- * Contributor : jws (code@linkhubcorp.com)
- * Written : 2023-03-13
- * Updated : 2023-12-13
- *
- * Thanks for your interest.
- * We welcome any suggestions, feedbacks, blames or anythings.
- * ======================================================================================
- */
-
 require_once 'Base.php';
 require 'Util.php';
 

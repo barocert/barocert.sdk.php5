@@ -1,25 +1,5 @@
 <?php
 
-/**
- * =====================================================================================
- * Class for base module for Kakaocert API SDK. It include base functionality for
- * RESTful web service request and parse json result. It uses Linkhub module
- * to accomplish authentication APIs.
- *
- * This module uses curl and openssl for HTTPS Request. So related modules must
- * be installed and enabled.
- *
- * https://www.linkhub.co.kr
- * Author : lsh (code@linkhubcorp.com)
- * Contributor : jws (code@linkhubcorp.com)
- * Written : 2023-03-13
- * Updated : 2023-12-13
- *
- * Thanks for your interest.
- * We welcome any suggestions, feedbacks, blames or anythings.
- * ======================================================================================
- */
-
 require_once 'Base.php';
 require 'Util.php';
 
@@ -602,6 +582,10 @@ class KakaoIdentityResult
   public $state;
   public $signedData;
   public $ci;
+  public $receiverName;
+  public $receiverYear;
+  public $receiverDay;
+  public $receiverHP;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -609,6 +593,10 @@ class KakaoIdentityResult
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->signedData) ? $this->signedData = $jsonInfo->signedData : null;
     isset($jsonInfo->ci) ? $this->ci = $jsonInfo->ci : null;
+    isset($jsonInfo->receiverName) ? $this->receiverName = $jsonInfo->receiverName : null;
+    isset($jsonInfo->receiverYear) ? $this->receiverYear = $jsonInfo->receiverYear : null;
+    isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
+    isset($jsonInfo->receiverHP) ? $this->receiverHP = $jsonInfo->receiverHP : null;
   }
 }
 
@@ -690,6 +678,10 @@ class KakaoSignResult
   public $state;
   public $signedData;
   public $ci;
+  public $receiverName;
+  public $receiverYear;
+  public $receiverDay;
+  public $receiverHP;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -697,6 +689,10 @@ class KakaoSignResult
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->signedData) ? $this->signedData = $jsonInfo->signedData : null;
     isset($jsonInfo->ci) ? $this->ci = $jsonInfo->ci : null;
+    isset($jsonInfo->receiverName) ? $this->receiverName = $jsonInfo->receiverName : null;
+    isset($jsonInfo->receiverYear) ? $this->receiverYear = $jsonInfo->receiverYear : null;
+    isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
+    isset($jsonInfo->receiverHP) ? $this->receiverHP = $jsonInfo->receiverHP : null;
   }
 }
 
@@ -781,6 +777,10 @@ class KakaoMultiSignResult
   public $state;
   public $multiSignedData;
   public $ci;
+  public $receiverName;
+  public $receiverYear;
+  public $receiverDay;
+  public $receiverHP;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -789,6 +789,10 @@ class KakaoMultiSignResult
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->multiSignedData) ? $this->multiSignedData = $jsonInfo->multiSignedData : null;
     isset($jsonInfo->ci) ? $this->ci = $jsonInfo->ci : null;
+    isset($jsonInfo->receiverName) ? $this->receiverName = $jsonInfo->receiverName : null;
+    isset($jsonInfo->receiverYear) ? $this->receiverYear = $jsonInfo->receiverYear : null;
+    isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
+    isset($jsonInfo->receiverHP) ? $this->receiverHP = $jsonInfo->receiverHP : null;
   }
 }
 
@@ -871,6 +875,10 @@ class KakaoCMSResult
   public $state;
   public $signedData;
   public $ci;
+  public $receiverName;
+  public $receiverYear;
+  public $receiverDay;
+  public $receiverHP;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -878,6 +886,10 @@ class KakaoCMSResult
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->signedData) ? $this->signedData = $jsonInfo->signedData : null;
     isset($jsonInfo->ci) ? $this->ci = $jsonInfo->ci : null;
+    isset($jsonInfo->receiverName) ? $this->receiverName = $jsonInfo->receiverName : null;
+    isset($jsonInfo->receiverYear) ? $this->receiverYear = $jsonInfo->receiverYear : null;
+    isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
+    isset($jsonInfo->receiverHP) ? $this->receiverHP = $jsonInfo->receiverHP : null;
   }
 }
 
