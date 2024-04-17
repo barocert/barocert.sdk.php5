@@ -899,6 +899,10 @@ class KakaoLoginResult
   public $state;
   public $signedData;
   public $ci;
+  public $receiverName;
+  public $receiverYear;
+  public $receiverDay;
+  public $receiverHP;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -906,6 +910,10 @@ class KakaoLoginResult
     isset($jsonInfo->state) ? $this->state = $jsonInfo->state : null;
     isset($jsonInfo->signedData) ? $this->signedData = $jsonInfo->signedData : null;
     isset($jsonInfo->ci) ? $this->ci = $jsonInfo->ci : null;
+    isset($jsonInfo->receiverName) ? $this->receiverName = $jsonInfo->receiverName : null;
+    isset($jsonInfo->receiverYear) ? $this->receiverYear = $jsonInfo->receiverYear : null;
+    isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
+    isset($jsonInfo->receiverHP) ? $this->receiverHP = $jsonInfo->receiverHP : null;
   }
 }
 
