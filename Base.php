@@ -227,10 +227,15 @@ class BaseService
     }
   }
 
+  // deprecated
   public function sha256ToBase64url($data){
     $hash = hash('sha256', $data, true);
     $base64Encoded = rtrim(strtr(base64_encode($hash), '+/', '-_'), '=');
     return $base64Encoded;
+  }
+
+  public function sha256ToBase64urlFile($data){
+    return $this->sha256ToBase64url($data);
   }
 
   public function encryptTo($data, $algorithm){

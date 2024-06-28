@@ -14,6 +14,15 @@ class KakaocertService extends BaseService
   public function encrypt($data) {
     return parent::encryptTo($data, 'AES');
   }
+  
+  // deprecated
+  public function sha256_base64url($data) {
+    return parent::sha256ToBase64url($data);
+  }
+
+  public function sha256_base64url_file($data) {
+    return parent::sha256ToBase64urlFile($data);
+  }
 
   /**
    * 본인인증 요청
