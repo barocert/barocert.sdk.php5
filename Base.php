@@ -145,6 +145,10 @@ class BaseService
       curl_setopt($http, CURLOPT_HTTPHEADER, $header);
       curl_setopt($http, CURLOPT_RETURNTRANSFER, TRUE);
       curl_setopt($http, CURLOPT_ENCODING, 'gzip,deflate');
+      // Connection timeout 설정
+      curl_setopt($http, CURLOPT_CONNECTTIMEOUT_MS, 70 * 1000);
+      // 통합 timeout 설정 
+      curl_setopt($http, CURLOPT_TIMEOUT_MS, 70 * 1000);
 
       $responseJson = curl_exec($http);
       $http_status = curl_getinfo($http, CURLINFO_HTTP_CODE);

@@ -595,6 +595,7 @@ class KakaoIdentityResult
   public $receiverYear;
   public $receiverDay;
   public $receiverHP;
+  public $receiverGender;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -606,6 +607,7 @@ class KakaoIdentityResult
     isset($jsonInfo->receiverYear) ? $this->receiverYear = $jsonInfo->receiverYear : null;
     isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
     isset($jsonInfo->receiverHP) ? $this->receiverHP = $jsonInfo->receiverHP : null;
+    isset($jsonInfo->receiverGender) ? $this->receiverGender = $jsonInfo->receiverGender : null;
   }
 }
 
@@ -691,6 +693,7 @@ class KakaoSignResult
   public $receiverYear;
   public $receiverDay;
   public $receiverHP;
+  public $receiverGender;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -702,6 +705,7 @@ class KakaoSignResult
     isset($jsonInfo->receiverYear) ? $this->receiverYear = $jsonInfo->receiverYear : null;
     isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
     isset($jsonInfo->receiverHP) ? $this->receiverHP = $jsonInfo->receiverHP : null;
+    isset($jsonInfo->receiverGender) ? $this->receiverGender = $jsonInfo->receiverGender : null;
   }
 }
 
@@ -790,6 +794,7 @@ class KakaoMultiSignResult
   public $receiverYear;
   public $receiverDay;
   public $receiverHP;
+  public $receiverGender;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -802,6 +807,7 @@ class KakaoMultiSignResult
     isset($jsonInfo->receiverYear) ? $this->receiverYear = $jsonInfo->receiverYear : null;
     isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
     isset($jsonInfo->receiverHP) ? $this->receiverHP = $jsonInfo->receiverHP : null;
+    isset($jsonInfo->receiverGender) ? $this->receiverGender = $jsonInfo->receiverGender : null;
   }
 }
 
@@ -888,6 +894,7 @@ class KakaoCMSResult
   public $receiverYear;
   public $receiverDay;
   public $receiverHP;
+  public $receiverGender;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -899,6 +906,7 @@ class KakaoCMSResult
     isset($jsonInfo->receiverYear) ? $this->receiverYear = $jsonInfo->receiverYear : null;
     isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
     isset($jsonInfo->receiverHP) ? $this->receiverHP = $jsonInfo->receiverHP : null;
+    isset($jsonInfo->receiverGender) ? $this->receiverGender = $jsonInfo->receiverGender : null;
   }
 }
 
@@ -912,6 +920,7 @@ class KakaoLoginResult
   public $receiverYear;
   public $receiverDay;
   public $receiverHP;
+  public $receiverGender;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -923,6 +932,7 @@ class KakaoLoginResult
     isset($jsonInfo->receiverYear) ? $this->receiverYear = $jsonInfo->receiverYear : null;
     isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
     isset($jsonInfo->receiverHP) ? $this->receiverHP = $jsonInfo->receiverHP : null;
+    isset($jsonInfo->receiverGender) ? $this->receiverGender = $jsonInfo->receiverGender : null;
   }
 }
 
