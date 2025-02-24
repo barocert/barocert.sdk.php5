@@ -596,6 +596,8 @@ class KakaoIdentityResult
   public $receiverDay;
   public $receiverHP;
   public $receiverGender;
+  public $receiverForeign;
+  public $receiverTelcoType;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -608,6 +610,8 @@ class KakaoIdentityResult
     isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
     isset($jsonInfo->receiverHP) ? $this->receiverHP = $jsonInfo->receiverHP : null;
     isset($jsonInfo->receiverGender) ? $this->receiverGender = $jsonInfo->receiverGender : null;
+    isset($jsonInfo->receiverForeign) ? $this->receiverForeign = $jsonInfo->receiverForeign : null;
+    isset($jsonInfo->receiverTelcoType) ? $this->receiverTelcoType = $jsonInfo->receiverTelcoType : null;
   }
 }
 
@@ -694,6 +698,8 @@ class KakaoSignResult
   public $receiverDay;
   public $receiverHP;
   public $receiverGender;
+  public $receiverForeign;
+  public $receiverTelcoType;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -706,6 +712,8 @@ class KakaoSignResult
     isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
     isset($jsonInfo->receiverHP) ? $this->receiverHP = $jsonInfo->receiverHP : null;
     isset($jsonInfo->receiverGender) ? $this->receiverGender = $jsonInfo->receiverGender : null;
+    isset($jsonInfo->receiverForeign) ? $this->receiverForeign = $jsonInfo->receiverForeign : null;
+    isset($jsonInfo->receiverTelcoType) ? $this->receiverTelcoType = $jsonInfo->receiverTelcoType : null;
   }
 }
 
@@ -795,6 +803,8 @@ class KakaoMultiSignResult
   public $receiverDay;
   public $receiverHP;
   public $receiverGender;
+  public $receiverForeign;
+  public $receiverTelcoType;
 
   public function fromJsonInfo($jsonInfo)
   {
@@ -808,6 +818,8 @@ class KakaoMultiSignResult
     isset($jsonInfo->receiverDay) ? $this->receiverDay = $jsonInfo->receiverDay : null;
     isset($jsonInfo->receiverHP) ? $this->receiverHP = $jsonInfo->receiverHP : null;
     isset($jsonInfo->receiverGender) ? $this->receiverGender = $jsonInfo->receiverGender : null;
+    isset($jsonInfo->receiverForeign) ? $this->receiverForeign = $jsonInfo->receiverForeign : null;
+    isset($jsonInfo->receiverTelcoType) ? $this->receiverTelcoType = $jsonInfo->receiverTelcoType : null;
   }
 }
 
