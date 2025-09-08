@@ -124,7 +124,7 @@ class KakaocertService extends BaseService
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
-    $result = parent::executeCURL('/KAKAO/Identity/' . $ClientCode .'/'. $ReceiptID, true, null);
+    $result = parent::executeCURL('/KAKAO/Identity/Verify/' . $ClientCode .'/'. $ReceiptID, true, null);
 
     $KakaoIdentityResult = new KakaoIdentityResult();
     $KakaoIdentityResult->fromJsonInfo($result);
@@ -234,7 +234,7 @@ class KakaocertService extends BaseService
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
     
-    $result = parent::executeCURL('/KAKAO/Sign/'. $ClientCode .'/'. $ReceiptID, true, null);
+    $result = parent::executeCURL('/KAKAO/Sign/Verify/'. $ClientCode .'/'. $ReceiptID, true, null);
 
     $KakaoSignResult = new KakaoSignResult();
     $KakaoSignResult->fromJsonInfo($result);
@@ -346,7 +346,7 @@ class KakaocertService extends BaseService
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
     
-    $result = parent::executeCURL('/KAKAO/MultiSign/'. $ClientCode .'/'. $ReceiptID, true, null);
+    $result = parent::executeCURL('/KAKAO/MultiSign/Verify/'. $ClientCode .'/'. $ReceiptID, true, null);
 
     $KakaoMultiSignResult = new KakaoMultiSignResult();
     $KakaoMultiSignResult->fromJsonInfo($result);
@@ -468,7 +468,7 @@ class KakaocertService extends BaseService
       throw new BarocertException('접수아이디는 32자 입니다.');
     }
 
-    $result = parent::executeCURL('/KAKAO/CMS/'. $ClientCode .'/'. $ReceiptID, true, null);
+    $result = parent::executeCURL('/KAKAO/CMS/Verify/'. $ClientCode .'/'. $ReceiptID, true, null);
 
     $KakaoCMSResult = new KakaoCMSResult();
     $KakaoCMSResult->fromJsonInfo($result);
@@ -493,7 +493,7 @@ class KakaocertService extends BaseService
       throw new BarocertException('트랜잭션 아이디가 입력되지 않았습니다.');
     }
 
-    $result = parent::executeCURL('/KAKAO/Login/' . $ClientCode .'/'. $TxID, true, null);
+    $result = parent::executeCURL('/KAKAO/Login/Verify/' . $ClientCode .'/'. $TxID, true, null);
 
     $KakaoLoginResult = new KakaoLoginResult();
     $KakaoLoginResult->fromJsonInfo($result);

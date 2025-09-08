@@ -135,7 +135,7 @@ class PasscertService extends BaseService
 
     $postdata = json_encode($PassIdentityVerify);
 
-    $result = parent::executeCURL('/PASS/Identity/' . $ClientCode .'/'. $ReceiptID, true, $postdata);
+    $result = parent::executeCURL('/PASS/Identity/Verify/' . $ClientCode .'/'. $ReceiptID, true, $postdata);
 
     $PassIdentityResult = new PassIdentityResult();
     $PassIdentityResult->fromJsonInfo($result);
@@ -256,7 +256,7 @@ class PasscertService extends BaseService
     
     $postdata = json_encode($PassSignVerify);
 
-    $result = parent::executeCURL('/PASS/Sign/'. $ClientCode .'/'. $ReceiptID, true, $postdata);
+    $result = parent::executeCURL('/PASS/Sign/Verify/'. $ClientCode .'/'. $ReceiptID, true, $postdata);
 
     $PassSignResult = new PassSignResult();
     $PassSignResult->fromJsonInfo($result);
@@ -383,7 +383,7 @@ class PasscertService extends BaseService
 
     $postdata = json_encode($PassCMSVerify);
 
-    $result = parent::executeCURL('/PASS/CMS/'. $ClientCode .'/'. $ReceiptID, true, $postdata);
+    $result = parent::executeCURL('/PASS/CMS/Verify/'. $ClientCode .'/'. $ReceiptID, true, $postdata);
 
     $PassCMSResult = new PassCMSResult();
     $PassCMSResult->fromJsonInfo($result);
@@ -501,7 +501,7 @@ class PasscertService extends BaseService
 
     $postdata = json_encode($PassLoginVerify);
 
-    $result = parent::executeCURL('/PASS/Login/' . $ClientCode .'/'. $ReceiptID, true, $postdata);
+    $result = parent::executeCURL('/PASS/Login/Verify/' . $ClientCode .'/'. $ReceiptID, true, $postdata);
 
     $PassLoginResult = new PassLoginResult();
     $PassLoginResult->fromJsonInfo($result);
